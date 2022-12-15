@@ -35,10 +35,11 @@ fn App<G: Html>(ctx: BoundedScope) -> View<G> {
     };
     let app_state = provide_context(ctx, app_state);
 
-    // on_mount(ctx, move || {
-    //     painter.rectangle(100, 100, 200, 200);
-    //     painter.ellipse(100, 100, 200, 200);
-    // });
+    on_mount(ctx, move || {
+        let window = web_sys::window().expect("should have a window in this context");
+        let document = window.document().expect("should have a document on window");
+        let on_key_down = document.onkeydown().unwrap();
+    });
 
     create_effect(ctx, move || {
         let elements = app_state.elements.get();
