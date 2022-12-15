@@ -23,7 +23,9 @@ features = [
     "Window",
     "CanvasRenderingContext2d",
     "HtmlCanvasElement",
-    "MouseEvent"
+    "MouseEvent",
+    "TextMetrics",
+    "FontFace"
 ]
 
 [lib]

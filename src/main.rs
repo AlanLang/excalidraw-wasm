@@ -6,10 +6,14 @@ use lib::{
 };
 use sycamore::prelude::*;
 use wasm_bindgen::JsCast;
-use web_sys::MouseEvent;
+use web_sys::{FontFace, HtmlCanvasElement, MouseEvent};
 fn main() {
     console_error_panic_hook::set_once();
     tracing_wasm::set_as_global_default();
+
+    let _ = FontFace::new_with_str("Virgil".into(), "url(https://uploads.codesandbox.io/uploads/user/ed077012-e728-4a42-8395-cbd299149d62/AflB-FG_Virgil.ttf)")
+        .unwrap()
+        .load();
 
     sycamore::render(|ctx| view!(ctx, App()));
 }
@@ -54,12 +58,17 @@ fn App<G: Html>(ctx: BoundedScope) -> View<G> {
                 height=window_height,
                 id="canvas",
                 on:mousedown= move |event|  {
-                    painter.clear_canvas(canvas_ref);
+                    let id = app_state.add_element();
                     let mouse_event = event.dyn_into::<MouseEvent>().unwrap();
                     let x = mouse_event.offset_x();
                     let y = mouse_event.offset_y();
+
+                    if *app_state.selected_kind.get() == WidgetKind::Text {
+                        let (rect, text) = get_text_info(canvas_ref,x,y);
+                        app_state.update_element(id, rect, vec![text]);
+                        return;
+                    }
                     // tracing::info!("Mouse down at ({}, {})", x, y);
-                    let id = app_state.add_element();
                     drawing_state.set((id, x, y));
                 },
                 on:mousemove= move |event| {
@@ -79,8 +88,35 @@ fn App<G: Html>(ctx: BoundedScope) -> View<G> {
                     let x = mouse_event.offset_x();
                     let y = mouse_event.offset_y();
                     tracing::info!("Mouse up at ({}, {})", x, y);
+                    app_state.delete_selection_element();
                 }
             )
         }
     )
+}
+
+pub fn get_text_info<G: Html>(canvas_ref: &NodeRef<G>, x: i32, y: i32) -> (Rect, String) {
+    let canvas: HtmlCanvasElement = canvas_ref.get::<DomNode>().unchecked_into();
+    let window = web_sys::window().expect("should have a window in this context");
+    let ctx = canvas
+        .get_context("2d")
+        .expect("should get context")
+        .unwrap()
+        .dyn_into::<web_sys::CanvasRenderingContext2d>()
+        .expect("should cast to context");
+    let text = window
+        .prompt_with_message("What text do you want?")
+        .unwrap();
+    let text = text.unwrap();
+    let text_measure = ctx.measure_text(&text).unwrap();
+
+    let height = text_measure.font_bounding_box_ascent() + text_measure.font_bounding_box_descent();
+    let width = text_measure.width();
+    let rect = Rect {
+        start_x: x,
+        start_y: y,
+        end_x: x + width as i32,
+        end_y: y + height as i32,
+    };
+    (rect, text)
 }
