@@ -61,11 +61,14 @@ impl AppState {
     }
 
     pub fn delete_selection_element(&self) {
-        let elements = self.elements.get();
-        let index = elements
-            .iter()
-            .position(|element| element.get().kind == WidgetKind::Selection)
-            .unwrap();
-        self.elements.modify().remove(index);
+        self.elements
+            .modify()
+            .retain(|element| element.get().kind != WidgetKind::Selection);
+    }
+
+    pub fn delete_selected_elements(&self) {
+        self.elements
+            .modify()
+            .retain(|element| !element.get().is_selected);
     }
 }

@@ -5,8 +5,9 @@ use lib::{
     widget::{create_widget, shape::Rect, WidgetKind},
 };
 use sycamore::prelude::*;
-use wasm_bindgen::JsCast;
-use web_sys::{FontFace, HtmlCanvasElement, MouseEvent};
+use wasm_bindgen::{prelude::Closure, JsCast};
+use web_sys::{FontFace, HtmlCanvasElement, KeyboardEvent, MouseEvent};
+
 fn main() {
     console_error_panic_hook::set_once();
     tracing_wasm::set_as_global_default();
@@ -34,18 +35,31 @@ fn App<G: Html>(ctx: BoundedScope) -> View<G> {
         elements: create_rc_signal(vec![]),
     };
     let app_state = provide_context(ctx, app_state);
+    let is_mounted = create_signal(ctx, false);
 
-    // on_mount(ctx, move || {
-    //     painter.rectangle(100, 100, 200, 200);
-    //     painter.ellipse(100, 100, 200, 200);
-    // });
+    on_mount(ctx, || {
+        let window = web_sys::window().expect("should have a window in this context");
+        let app_state_cloned = app_state.clone();
+        let handler = move |event: KeyboardEvent| {
+            if event.key() == "Backspace" {
+                app_state_cloned.delete_selected_elements();
+            }
+        };
+        let closure = Closure::wrap(Box::new(handler) as Box<dyn FnMut(_)>);
+
+        window
+            .add_event_listener_with_callback("keydown", closure.as_ref().unchecked_ref())
+            .unwrap();
+
+        closure.forget();
+        is_mounted.set(true);
+    });
 
     create_effect(ctx, move || {
-        let elements = app_state.elements.get();
-        if elements.is_empty() {
-            return;
+        if *is_mounted.get() {
+            let elements = app_state.elements.get();
+            painter.draw_elements(canvas_ref, elements);
         }
-        painter.draw_elements(canvas_ref, elements);
     });
 
     view! (ctx,
@@ -89,6 +103,9 @@ fn App<G: Html>(ctx: BoundedScope) -> View<G> {
                     let y = mouse_event.offset_y();
                     tracing::info!("Mouse up at ({}, {})", x, y);
                     app_state.delete_selection_element();
+                },
+                on:keydown= move |event| {
+                    tracing::info!("Key down at ({:?})", event);
                 }
             )
         }
