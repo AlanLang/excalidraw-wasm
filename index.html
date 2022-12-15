@@ -1,0 +1,48 @@
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excalidraw</title>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+    </style>
+    <link rel="stylesheet" href="/tailwind.css">
+    <script src="https://unpkg.com/roughjs@4.5.2/bundled/rough.js"></script>
+    <script>
+        window.painter = {
+            rectangle: (x,y,w,h) => {
+                var generator = rough.generator();
+                const shape = generator.rectangle(x,y,w,h);
+                return JSON.stringify(shape);
+            },
+            ellipse: (centerX,centerY,w,h) => {
+                var generator = rough.generator();
+                const shape = generator.ellipse(centerX,centerY,w,h);
+                return JSON.stringify(shape);
+            },
+            line: (x1,y1,x2,y2) => {
+                var generator = rough.generator();
+                const shape = generator.line(x1,y1,x2,y2);
+                return JSON.stringify(shape);
+            },
+            draw: (shapeString) => {
+                if(!shapeString) {
+                    return;
+                }
+                const shape = JSON.parse(shapeString);
+                const rc = rough.canvas(document.getElementById('canvas'));
+                rc.draw(shape);
+            },
+        }
+    </script>
+
+<link rel="preload" href="/excalidraw-wasm/excalidraw-wasm-e4aeb3fa4531797a_bg.wasm" as="fetch" type="application/wasm" crossorigin="">
+<link rel="modulepreload" href="/excalidraw-wasm/excalidraw-wasm-e4aeb3fa4531797a.js"></head>
+<body>
+
+<script type="module">import init from '/excalidraw-wasm/excalidraw-wasm-e4aeb3fa4531797a.js';init('/excalidraw-wasm/excalidraw-wasm-e4aeb3fa4531797a_bg.wasm');</script></body></html>
