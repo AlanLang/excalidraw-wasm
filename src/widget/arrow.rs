@@ -1,5 +1,3 @@
-use std::cmp;
-
 use crate::painter::Painter;
 
 use super::shape::{Rect, Shape};

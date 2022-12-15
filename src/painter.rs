@@ -6,7 +6,6 @@ use sycamore::{
     reactive::RcSignal,
     web::{DomNode, Html},
 };
-use tracing::info;
 use wasm_bindgen::{prelude::wasm_bindgen, JsCast, JsValue};
 use web_sys::{CanvasRenderingContext2d, HtmlCanvasElement};
 
@@ -56,7 +55,7 @@ impl Painter {
         line(x1, y1, x2, y2)
     }
 
-    pub fn selection(&self, x: i32, y: i32, w: i32, h: i32) -> String {
+    pub fn selection(&self, _x: i32, _y: i32, _w: i32, _h: i32) -> String {
         "".to_string()
     }
 
@@ -98,6 +97,25 @@ impl Painter {
         ctx.set_line_dash(line_dash.as_ref()).unwrap();
     }
 
+    pub fn draw_text(&self, canvas: &HtmlCanvasElement, element: &Rc<Element>) {
+        let ctx = get_context(canvas);
+        let font = ctx.font();
+        ctx.set_font("normal 20px Virgil");
+        let text = element.shape_string.get();
+        let text = text.first();
+        let text = match text {
+            Some(text) => text,
+            None => return,
+        };
+        let text_measure = ctx.measure_text(&text).unwrap();
+
+        let x = element.rect.start_x;
+        let y = element.rect.start_y + text_measure.font_bounding_box_ascent() as i32;
+
+        ctx.fill_text(text.as_str(), x.into(), y.into()).unwrap();
+        ctx.set_font(font.as_ref());
+    }
+
     pub fn draw_elements<G: Html>(
         &self,
         canvas_ref: &NodeRef<G>,
@@ -109,9 +127,13 @@ impl Painter {
         elements.iter().for_each(|element| {
             let element = element.get();
             let shape_string = element.shape_string.get();
-            shape_string.iter().for_each(|shape| {
-                self.draw_shape(shape);
-            });
+            if element.kind == WidgetKind::Text {
+                self.draw_text(&html_canvas_element, &element);
+            } else {
+                shape_string.iter().for_each(|shape| {
+                    self.draw_shape(shape);
+                });
+            }
             if element.kind == WidgetKind::Selection {
                 self.draw_selection(&html_canvas_element, &element);
             }

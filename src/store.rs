@@ -40,16 +40,6 @@ impl AppState {
 
     pub fn update_element(&self, id: u32, rect: Rect, shape_string: Vec<String>) {
         let elements = self.elements.get();
-        // elements.iter().for_each(|re_element| {
-        //     let element = re_element.get();
-        //     if element.id == id {
-        //         re_element.modify().rect = rect;
-        //         re_element.modify().shape_string.set(shape_string.clone())
-        //     } else {
-        //         let is_selected =
-        //     }
-        // });
-
         let index = elements
             .iter()
             .position(|element| element.get().id == id)
@@ -68,5 +58,14 @@ impl AppState {
                 }
             });
         }
+    }
+
+    pub fn delete_selection_element(&self) {
+        let elements = self.elements.get();
+        let index = elements
+            .iter()
+            .position(|element| element.get().kind == WidgetKind::Selection)
+            .unwrap();
+        self.elements.modify().remove(index);
     }
 }
