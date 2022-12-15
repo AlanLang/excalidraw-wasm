@@ -3,8 +3,8 @@ name: release
 on:
   push:
     branches: [master]
-  pull_request:
-    branches: [master]
+  # pull_request:
+  #   branches: [master]
 
 env:
   TOOLCHAIN: nightly
@@ -31,7 +31,6 @@ jobs:
           rustup update $TOOLCHAIN
           rustup default $TOOLCHAIN
           cargo install trunk
-          rustup target add wasm32-unknown-unknown
 
       # Pull website
       - name: Build cache
@@ -45,6 +44,7 @@ jobs:
       - name: Trunk build
         if: steps.cache-build.outputs.cache-hit != 'true'
         run: |
+          rustup target add wasm32-unknown-unknown
           npm install tailwindcss --global
           trunk build --release --public-url /excalidraw-wasm/
 
