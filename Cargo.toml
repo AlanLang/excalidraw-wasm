@@ -1,0 +1,31 @@
+[package]
+name = "excalidraw-wasm"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+console_error_panic_hook = "0.1.6"
+serde = { version = "1.0.118", features = ["derive"] }
+serde_json = "1"
+sycamore = {version = "0.8.2", features = ["serde","futures","suspense"]}
+tracing = "0.1"
+tracing-wasm = "0.2"
+js-sys = "0.3"
+wasm-bindgen = { version="0.2" }
+wasm-bindgen-futures = "0.4"
+gloo-utils = {version = "0.1.6", features = ["serde"]}
+
+[dependencies.web-sys]
+version = "0.3"
+features = [
+    "Window",
+    "CanvasRenderingContext2d",
+    "HtmlCanvasElement",
+    "MouseEvent"
+]
+
+[lib]
+name = "lib"
+path = "src/lib.rs"
