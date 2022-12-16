@@ -2,9 +2,20 @@ use std::sync::atomic::AtomicU32;
 
 use sycamore::reactive::{create_rc_signal, RcSignal};
 
-use crate::widget::{shape::Rect, WidgetKind};
+use crate::{
+    painter::Painter,
+    widget::{create_widget, shape::Rect, WidgetKind},
+};
 
 static NEXT_ELEMENT_ID: std::sync::atomic::AtomicU32 = AtomicU32::new(1);
+
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum ArrowDirection {
+    Left,
+    Right,
+    Up,
+    Down,
+}
 
 #[derive(Debug, Clone)]
 pub struct Element {
@@ -71,4 +82,42 @@ impl AppState {
             .modify()
             .retain(|element| !element.get().is_selected);
     }
+
+    pub fn move_selected_elements(&self, arrow: ArrowDirection, step: i32) {
+        tracing::info!("Moving selected elements");
+        let elements = self.elements.get();
+        elements.iter().for_each(|re_element| {
+            let element = re_element.get();
+            if element.is_selected {
+                match arrow {
+                    ArrowDirection::Left => {
+                        re_element.modify().rect.start_x -= step;
+                        re_element.modify().rect.end_x -= step;
+                    }
+                    ArrowDirection::Right => {
+                        re_element.modify().rect.start_x += step;
+                        re_element.modify().rect.end_x += step;
+                    }
+                    ArrowDirection::Up => {
+                        re_element.modify().rect.start_y -= step;
+                        re_element.modify().rect.end_y -= step;
+                    }
+                    ArrowDirection::Down => {
+                        re_element.modify().rect.start_y += step;
+                        re_element.modify().rect.end_y += step;
+                    }
+                }
+                re_element.modify().shape_string.set(get_shape_string(
+                    re_element.get().kind,
+                    re_element.get().rect,
+                ));
+            }
+        });
+    }
+}
+
+fn get_shape_string(kind: WidgetKind, rect: Rect) -> Vec<String> {
+    let painter = Painter::new();
+    let widget = create_widget(kind, rect);
+    widget.get_config(&painter)
 }
