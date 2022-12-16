@@ -93,7 +93,7 @@ fn App<G: Html>(ctx: BoundedScope) -> View<G> {
                         let y = mouse_event.offset_y();
                         let widget = create_widget(*app_state.selected_kind.get(), Rect::new(start_x, start_y, x, y));
                         let config_string = widget.get_config(&painter);
-                        app_state.update_element(id, Rect::new(start_x, start_y, x, y), config_string);
+                        app_state.update_element(id, fix_rect(Rect::new(start_x, start_y, x, y)), config_string);
                     }
                 },
                 on:mouseup= move |event| {
@@ -136,4 +136,17 @@ pub fn get_text_info<G: Html>(canvas_ref: &NodeRef<G>, x: i32, y: i32) -> (Rect,
         end_y: y + height as i32,
     };
     (rect, text)
+}
+
+fn fix_rect(rect: Rect) -> Rect {
+    let start_x = rect.start_x.min(rect.end_x);
+    let start_y = rect.start_y.min(rect.end_y);
+    let end_x = rect.start_x.max(rect.end_x);
+    let end_y = rect.start_y.max(rect.end_y);
+    Rect {
+        start_x,
+        start_y,
+        end_x,
+        end_y,
+    }
 }
