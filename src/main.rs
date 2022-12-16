@@ -1,6 +1,6 @@
 use lib::{
     painter::Painter,
-    store::AppState,
+    store::{AppState, ArrowDirection},
     view::toolbar::Toolbar,
     widget::{create_widget, shape::Rect, WidgetKind},
 };
@@ -41,9 +41,17 @@ fn App<G: Html>(ctx: BoundedScope) -> View<G> {
         let window = web_sys::window().expect("should have a window in this context");
         let app_state_cloned = app_state.clone();
         let handler = move |event: KeyboardEvent| {
-            if event.key() == "Backspace" {
-                app_state_cloned.delete_selected_elements();
-            }
+            let step: i32 = event.shift_key().then(|| 10).unwrap_or(1);
+            match event.key().as_str() {
+                "Backspace" => app_state_cloned.delete_selected_elements(),
+                "ArrowLeft" => app_state_cloned.move_selected_elements(ArrowDirection::Left, step),
+                "ArrowRight" => {
+                    app_state_cloned.move_selected_elements(ArrowDirection::Right, step)
+                }
+                "ArrowUp" => app_state_cloned.move_selected_elements(ArrowDirection::Up, step),
+                "ArrowDown" => app_state_cloned.move_selected_elements(ArrowDirection::Down, step),
+                _ => (),
+            };
         };
         let closure = Closure::wrap(Box::new(handler) as Box<dyn FnMut(_)>);
 

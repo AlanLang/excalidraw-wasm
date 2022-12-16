@@ -11,35 +11,35 @@ pub fn Toolbar<G: Html>(ctx: Scope) -> View<G> {
         tracing::info!("kind down at ({:?})", kind);
         app_state.set_selected_kind(kind);
     };
-
+    // TODO：使用迭代器来减少下面的重复代码
     view! (ctx,
         div {
             ElementOption(
-                text="Rectangle".to_string(),
+                text=WidgetKind::Rectangle.to_string(),
                 kind=WidgetKind::Rectangle,
                 on_click= Box::new(on_selected),
                 checked = value == WidgetKind::Rectangle
             )
             ElementOption(
-                text="Ellipse".to_string(),
+                text=WidgetKind::Ellipse.to_string(),
                 kind=WidgetKind::Ellipse,
                 on_click= Box::new(on_selected),
                 checked = value == WidgetKind::Ellipse
             )
             ElementOption(
-                text="Arrow".to_string(),
+                text=WidgetKind::Arrow.to_string(),
                 kind=WidgetKind::Arrow,
                 on_click= Box::new(on_selected),
                 checked = value == WidgetKind::Arrow
             )
             ElementOption(
-                text="Text".to_string(),
+                text=WidgetKind::Text.to_string(),
                 kind=WidgetKind::Text,
                 on_click= Box::new(on_selected),
                 checked = value == WidgetKind::Text
             )
             ElementOption(
-                text="Selection".to_string(),
+                text=WidgetKind::Selection.to_string(),
                 kind=WidgetKind::Selection,
                 on_click= Box::new(on_selected),
                 checked = value == WidgetKind::Selection
