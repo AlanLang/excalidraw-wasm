@@ -6,31 +6,10 @@ use sycamore::{
     reactive::RcSignal,
     web::{DomNode, Html},
 };
-use wasm_bindgen::{prelude::wasm_bindgen, JsCast, JsValue};
+use wasm_bindgen::{JsCast, JsValue};
 use web_sys::{CanvasRenderingContext2d, HtmlCanvasElement};
 
-use crate::{store::Element, widget::WidgetKind};
-
-#[wasm_bindgen]
-extern "C" {
-    #[wasm_bindgen(js_namespace = painter)]
-    fn rectangle(x: i32, y: i32, w: i32, h: i32) -> String;
-
-    #[wasm_bindgen(js_namespace = painter)]
-    fn ellipse(center_x: i32, center_y: i32, w: i32, h: i32) -> String;
-
-    #[wasm_bindgen(js_namespace = painter)]
-    fn line(x1: f32, y1: f32, x2: f32, y2: f32) -> String;
-
-    #[wasm_bindgen(js_namespace = painter)]
-    fn draw(config_string: String);
-
-    #[wasm_bindgen(js_namespace = console)]
-    fn log(s: &str);
-}
-
-#[derive(Copy, Clone)]
-pub struct Painter {}
+use crate::{rough::Rough, store::Element, widget::WidgetKind};
 
 fn get_context(canvas: &HtmlCanvasElement) -> CanvasRenderingContext2d {
     canvas
@@ -41,29 +20,12 @@ fn get_context(canvas: &HtmlCanvasElement) -> CanvasRenderingContext2d {
         .expect("should cast to context")
 }
 
+#[derive(Clone)]
+pub struct Painter {}
+
 impl Painter {
     pub fn new() -> Painter {
         Painter {}
-    }
-
-    pub fn rectangle(&self, x: i32, y: i32, w: i32, h: i32) -> String {
-        rectangle(x, y, w, h)
-    }
-
-    pub fn ellipse(&self, center_x: i32, center_y: i32, w: i32, h: i32) -> String {
-        ellipse(center_x, center_y, w, h)
-    }
-
-    pub fn line(&self, x1: f32, y1: f32, x2: f32, y2: f32) -> String {
-        line(x1, y1, x2, y2)
-    }
-
-    pub fn selection(&self, _x: i32, _y: i32, _w: i32, _h: i32) -> String {
-        "".to_string()
-    }
-
-    pub fn draw_shape(&self, config_string: &String) {
-        draw(config_string.to_string());
     }
 
     pub fn draw_selection(&self, canvas: &HtmlCanvasElement, element: &Rc<Element>) {
@@ -134,7 +96,7 @@ impl Painter {
                 self.draw_text(&html_canvas_element, &element);
             } else {
                 shape_string.iter().for_each(|shape| {
-                    self.draw_shape(shape);
+                    Rough::draw_shape(shape);
                 });
             }
             if element.kind == WidgetKind::Selection {

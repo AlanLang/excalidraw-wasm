@@ -1,7 +1,5 @@
-use crate::painter::Painter;
-
 pub trait Shape {
-    fn get_config(&self, painter: &Painter) -> Vec<String>;
+    fn get_config(&self) -> Vec<String>;
 }
 
 #[derive(Debug, Copy, Clone)]

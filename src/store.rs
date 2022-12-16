@@ -2,10 +2,7 @@ use std::sync::atomic::AtomicU32;
 
 use sycamore::reactive::{create_rc_signal, RcSignal};
 
-use crate::{
-    painter::Painter,
-    widget::{create_widget, shape::Rect, WidgetKind},
-};
+use crate::widget::{create_widget, shape::Rect, WidgetKind};
 
 static NEXT_ELEMENT_ID: std::sync::atomic::AtomicU32 = AtomicU32::new(1);
 
@@ -117,7 +114,6 @@ impl AppState {
 }
 
 fn get_shape_string(kind: WidgetKind, rect: Rect) -> Vec<String> {
-    let painter = Painter::new();
     let widget = create_widget(kind, rect);
-    widget.get_config(&painter)
+    widget.get_config()
 }

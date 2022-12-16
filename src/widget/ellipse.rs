@@ -1,4 +1,4 @@
-use crate::painter::Painter;
+use crate::rough::Rough;
 
 use super::shape::{Rect, Shape};
 
@@ -14,11 +14,11 @@ impl Ellipse {
 }
 
 impl Shape for Ellipse {
-    fn get_config(&self, painter: &Painter) -> Vec<String> {
+    fn get_config(&self) -> Vec<String> {
         let width = self.rect.end_x - self.rect.start_x;
         let height = self.rect.end_y - self.rect.start_y;
 
-        let config_string = painter.ellipse(
+        let config_string = Rough::generator_ellipse(
             self.rect.start_x + width / 2,
             self.rect.start_y + height / 2,
             width,

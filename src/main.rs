@@ -20,7 +20,7 @@ fn main() {
 }
 
 #[component]
-fn App<G: Html>(ctx: BoundedScope) -> View<G> {
+fn App<'a, G: Html>(ctx: Scope<'a>) -> View<G> {
     let window = web_sys::window().expect("no global `window` exists");
     let window_width = window.inner_width().unwrap().as_f64().unwrap();
     let window_height = window.inner_height().unwrap().as_f64().unwrap();
@@ -109,7 +109,7 @@ fn App<G: Html>(ctx: BoundedScope) -> View<G> {
                         let x = mouse_event.offset_x();
                         let y = mouse_event.offset_y();
                         let widget = create_widget(*app_state.selected_kind.get(), Rect::new(start_x, start_y, x, y));
-                        let config_string = widget.get_config(&painter);
+                        let config_string = widget.get_config();
                         app_state.update_element(id, fix_rect(Rect::new(start_x, start_y, x, y)), config_string);
                     }
                 },
