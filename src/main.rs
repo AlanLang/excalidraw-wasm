@@ -38,6 +38,15 @@ fn App<G: Html>(ctx: BoundedScope) -> View<G> {
     let is_mounted = create_signal(ctx, false);
 
     on_mount(ctx, || {
+        let canvas: HtmlCanvasElement = canvas_ref.get::<DomNode>().unchecked_into();
+        let ctx = canvas
+            .get_context("2d")
+            .expect("should get context")
+            .unwrap()
+            .dyn_into::<web_sys::CanvasRenderingContext2d>()
+            .expect("should cast to context");
+        ctx.translate(0.5, 0.5).unwrap();
+
         let window = web_sys::window().expect("should have a window in this context");
         let app_state_cloned = app_state.clone();
         let handler = move |event: KeyboardEvent| {
