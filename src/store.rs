@@ -104,16 +104,7 @@ impl AppState {
                         re_element.modify().rect.end_y += step;
                     }
                 }
-                re_element.modify().shape_string.set(get_shape_string(
-                    re_element.get().kind,
-                    re_element.get().rect,
-                ));
             }
         });
     }
-}
-
-fn get_shape_string(kind: WidgetKind, rect: Rect) -> Vec<String> {
-    let widget = create_widget(kind, rect);
-    widget.get_config()
 }

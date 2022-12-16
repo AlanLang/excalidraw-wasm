@@ -110,7 +110,11 @@ fn App<'a, G: Html>(ctx: Scope<'a>) -> View<G> {
                         let y = mouse_event.offset_y();
                         let widget = create_widget(*app_state.selected_kind.get(), Rect::new(start_x, start_y, x, y));
                         let config_string = widget.get_config();
-                        app_state.update_element(id, fix_rect(Rect::new(start_x, start_y, x, y)), config_string);
+                        if *app_state.selected_kind.get() == WidgetKind::Selection {
+                            app_state.update_element(id, fix_rect(Rect::new(start_x, start_y, x, y)), config_string);
+                        } else {
+                            app_state.update_element(id, Rect::new(start_x, start_y, x, y), config_string);
+                        }
                     }
                 },
                 on:mouseup= move |event| {

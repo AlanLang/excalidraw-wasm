@@ -88,16 +88,22 @@ impl Painter {
     ) {
         self.clear_canvas(canvas_ref);
         let html_canvas_element: HtmlCanvasElement = canvas_ref.get::<DomNode>().unchecked_into();
+        let ctx = get_context(&html_canvas_element);
 
         elements.iter().for_each(|element| {
             let element = element.get();
+            let rect = element.rect;
             let shape_string = element.shape_string.get();
             if element.kind == WidgetKind::Text {
                 self.draw_text(&html_canvas_element, &element);
             } else {
+                ctx.translate(rect.start_x.into(), rect.start_y.into())
+                    .unwrap();
                 shape_string.iter().for_each(|shape| {
                     Rough::draw_shape(shape);
                 });
+                ctx.translate((-rect.start_x).into(), (-rect.start_y).into())
+                    .unwrap();
             }
             if element.kind == WidgetKind::Selection {
                 self.draw_selection(&html_canvas_element, &element);

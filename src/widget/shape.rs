@@ -28,4 +28,12 @@ impl Rect {
         }
         return false;
     }
+
+    pub fn get_width(&self) -> i32 {
+        self.end_x - self.start_x
+    }
+
+    pub fn get_height(&self) -> i32 {
+        self.end_y - self.start_y
+    }
 }
