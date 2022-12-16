@@ -493,6 +493,10 @@ imports.wbg.__wbg_getContext_4d5e97892c1b206a = function() { return handleError(
     const ret = getObject(arg0).getContext(v0);
     return isLikeNone(ret) ? 0 : addHeapObject(ret);
 }, arguments) };
+imports.wbg.__wbg_shiftKey_908ae224b8722a41 = function(arg0) {
+    const ret = getObject(arg0).shiftKey;
+    return ret;
+};
 imports.wbg.__wbg_key_ad4fc49423a94efa = function(arg0, arg1) {
     const ret = getObject(arg1).key;
     const ptr0 = passStringToWasm0(ret, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
@@ -593,6 +597,9 @@ imports.wbg.__wbg_measureText_734acef1b5e2b3fd = function() { return handleError
     const ret = getObject(arg0).measureText(v0);
     return addHeapObject(ret);
 }, arguments) };
+imports.wbg.__wbg_translate_ee7d176c35f20054 = function() { return handleError(function (arg0, arg1, arg2) {
+    getObject(arg0).translate(arg1, arg2);
+}, arguments) };
 imports.wbg.__wbg_width_87b8dcd7cafaeec1 = function(arg0) {
     const ret = getObject(arg0).width;
     return ret;
@@ -653,15 +660,15 @@ imports.wbg.__wbindgen_debug_string = function(arg0, arg1) {
 imports.wbg.__wbindgen_throw = function(arg0, arg1) {
     throw new Error(getStringFromWasm0(arg0, arg1));
 };
-imports.wbg.__wbindgen_closure_wrapper254 = function(arg0, arg1, arg2) {
+imports.wbg.__wbindgen_closure_wrapper256 = function(arg0, arg1, arg2) {
     const ret = makeClosure(arg0, arg1, 101, __wbg_adapter_18);
     return addHeapObject(ret);
 };
-imports.wbg.__wbindgen_closure_wrapper256 = function(arg0, arg1, arg2) {
+imports.wbg.__wbindgen_closure_wrapper258 = function(arg0, arg1, arg2) {
     const ret = makeMutClosure(arg0, arg1, 101, __wbg_adapter_21);
     return addHeapObject(ret);
 };
-imports.wbg.__wbindgen_closure_wrapper258 = function(arg0, arg1, arg2) {
+imports.wbg.__wbindgen_closure_wrapper260 = function(arg0, arg1, arg2) {
     const ret = makeMutClosure(arg0, arg1, 101, __wbg_adapter_21);
     return addHeapObject(ret);
 };
@@ -700,7 +707,7 @@ function initSync(module) {
 
 async function init(input) {
     if (typeof input === 'undefined') {
-        input = new URL('excalidraw-wasm-b4594f942191af58_bg.wasm', import.meta.url);
+        input = new URL('excalidraw-wasm-2903a386c5aa6d22_bg.wasm', import.meta.url);
     }
     const imports = getImports();
 
