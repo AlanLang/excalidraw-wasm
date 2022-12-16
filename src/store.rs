@@ -65,4 +65,10 @@ impl AppState {
             .modify()
             .retain(|element| element.get().kind != WidgetKind::Selection);
     }
+
+    pub fn delete_selected_elements(&self) {
+        self.elements
+            .modify()
+            .retain(|element| !element.get().is_selected);
+    }
 }

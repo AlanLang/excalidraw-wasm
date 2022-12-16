@@ -24,6 +24,9 @@ extern "C" {
 
     #[wasm_bindgen(js_namespace = painter)]
     fn draw(config_string: String);
+
+    #[wasm_bindgen(js_namespace = console)]
+    fn log(s: &str);
 }
 
 #[derive(Copy, Clone)]

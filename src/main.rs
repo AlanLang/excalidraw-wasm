@@ -5,8 +5,9 @@ use lib::{
     widget::{create_widget, shape::Rect, WidgetKind},
 };
 use sycamore::prelude::*;
-use wasm_bindgen::JsCast;
-use web_sys::{FontFace, HtmlCanvasElement, MouseEvent};
+use wasm_bindgen::{prelude::Closure, JsCast};
+use web_sys::{console, FontFace, HtmlCanvasElement, KeyboardEvent, MouseEvent};
+
 fn main() {
     console_error_panic_hook::set_once();
     tracing_wasm::set_as_global_default();
@@ -37,8 +38,20 @@ fn App<G: Html>(ctx: BoundedScope) -> View<G> {
 
     on_mount(ctx, move || {
         let window = web_sys::window().expect("should have a window in this context");
-        let document = window.document().expect("should have a document on window");
-        let on_key_down = document.onkeydown().unwrap();
+        let handler = move |event: KeyboardEvent| {
+            console::log_1(&event.type_().into());
+            console::log_1(&event.key().into());
+            if event.key() == "Backspace" {
+                // app_state.delete_selection_element();
+            }
+        };
+        let closure = Closure::wrap(Box::new(handler) as Box<dyn FnMut(_)>);
+
+        window
+            .add_event_listener_with_callback("keydown", closure.as_ref().unchecked_ref())
+            .unwrap();
+
+        closure.forget();
     });
 
     create_effect(ctx, move || {
@@ -90,6 +103,9 @@ fn App<G: Html>(ctx: BoundedScope) -> View<G> {
                     let y = mouse_event.offset_y();
                     tracing::info!("Mouse up at ({}, {})", x, y);
                     app_state.delete_selection_element();
+                },
+                on:keydown= move |event| {
+                    tracing::info!("Key down at ({:?})", event);
                 }
             )
         }
