@@ -1,4 +1,4 @@
-use crate::painter::Painter;
+use crate::rough::Rough;
 
 use super::shape::{Rect, Shape};
 
@@ -14,14 +14,14 @@ impl Arrow {
 }
 
 impl Shape for Arrow {
-    fn get_config(&self, painter: &Painter) -> Vec<String> {
-        let width = (self.rect.end_x - self.rect.start_x) as f32;
-        let height = (self.rect.end_y - self.rect.start_y) as f32;
+    fn get_config(&self) -> Vec<String> {
+        let width = (self.rect.get_width()) as f32;
+        let height = (self.rect.get_height()) as f32;
 
-        let x1 = self.rect.start_x as f32;
-        let y1 = self.rect.start_y as f32;
-        let x2 = x1 + width;
-        let y2 = y1 + height;
+        let x1 = 0 as f32;
+        let y1 = 0 as f32;
+        let x2 = width;
+        let y2 = height;
 
         let size = 30 as f32; // pixels
         let distance = ((x2 - x1).powf(2.0) as f32 + (y2 - y1).powf(2.0) as f32).sqrt();
@@ -33,9 +33,9 @@ impl Shape for Arrow {
         let angle = 20 as f32; // degrees
         let [x3, y3] = rotate(xs, ys, x2, y2, (-angle * std::f32::consts::PI) / 180.0);
         let [x4, y4] = rotate(xs, ys, x2, y2, (angle * std::f32::consts::PI) / 180.0);
-        let config1 = painter.line(x1, y1, x2, y2);
-        let config2 = painter.line(x2, y2, x3, y3);
-        let config3 = painter.line(x2, y2, x4, y4);
+        let config1 = Rough::generator_line(x3, y3, x2, y2);
+        let config2 = Rough::generator_line(x1, y1, x2, y2);
+        let config3 = Rough::generator_line(x4, y4, x2, y2);
         [config1, config2, config3].to_vec()
     }
 }

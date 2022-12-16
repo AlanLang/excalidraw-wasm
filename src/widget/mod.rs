@@ -42,7 +42,7 @@ pub fn create_widget(widget_type: WidgetKind, rect: Rect) -> Box<dyn Shape> {
         WidgetKind::Rectangle => Box::new(Rectangle::new(rect)),
         WidgetKind::Ellipse => Box::new(Ellipse::new(rect)),
         WidgetKind::Arrow => Box::new(arrow::Arrow::new(rect)),
-        WidgetKind::Selection => Box::new(selection::Selection::new(rect)),
+        WidgetKind::Selection => Box::new(selection::Selection::new()),
         _ => unimplemented!(),
     }
 }

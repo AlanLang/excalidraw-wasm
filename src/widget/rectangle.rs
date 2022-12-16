@@ -1,4 +1,4 @@
-use crate::painter::Painter;
+use crate::rough::Rough;
 
 use super::shape::{Rect, Shape};
 
@@ -14,13 +14,9 @@ impl Rectangle {
 }
 
 impl Shape for Rectangle {
-    fn get_config(&self, painter: &Painter) -> Vec<String> {
-        let config_string = painter.rectangle(
-            self.rect.start_x,
-            self.rect.start_y,
-            self.rect.end_x - self.rect.start_x,
-            self.rect.end_y - self.rect.start_y,
-        );
+    fn get_config(&self) -> Vec<String> {
+        let config_string =
+            Rough::generator_rectangle(0, 0, self.rect.get_width(), self.rect.get_height());
         [config_string].to_vec()
     }
 }

@@ -3,6 +3,7 @@
         "consts",
         "Excalidraw",
         "gloo",
+        "keydown",
         "mousedown",
         "mousemove",
         "mouseup",

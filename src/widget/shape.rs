@@ -1,7 +1,5 @@
-use crate::painter::Painter;
-
 pub trait Shape {
-    fn get_config(&self, painter: &Painter) -> Vec<String>;
+    fn get_config(&self) -> Vec<String>;
 }
 
 #[derive(Debug, Copy, Clone)]
@@ -29,5 +27,13 @@ impl Rect {
             }
         }
         return false;
+    }
+
+    pub fn get_width(&self) -> i32 {
+        self.end_x - self.start_x
+    }
+
+    pub fn get_height(&self) -> i32 {
+        self.end_y - self.start_y
     }
 }
