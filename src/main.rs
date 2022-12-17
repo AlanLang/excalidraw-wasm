@@ -96,6 +96,9 @@ fn App<'a, G: Html>(ctx: Scope<'a>) -> View<G> {
 
                     if *app_state.selected_kind.get() == WidgetKind::Text {
                         let (rect, text) = get_text_info(canvas_ref,x,y);
+                        if text != "" {
+                            return;
+                        }
                         app_state.update_element(id, rect, vec![text]);
                         return;
                     }
