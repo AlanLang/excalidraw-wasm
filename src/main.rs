@@ -31,7 +31,7 @@ fn App<'a, G: Html>(ctx: Scope<'a>) -> View<G> {
     let drawing_state = create_signal(ctx, (0, 0, 0));
 
     let app_state = AppState {
-        selected_kind: create_rc_signal(WidgetKind::Rectangle),
+        selected_kind: create_rc_signal(WidgetKind::Selection),
         elements: create_rc_signal(vec![]),
     };
     let app_state = provide_context(ctx, app_state);
@@ -124,10 +124,8 @@ fn App<'a, G: Html>(ctx: Scope<'a>) -> View<G> {
                     let y = mouse_event.offset_y();
                     tracing::info!("Mouse up at ({}, {})", x, y);
                     app_state.delete_selection_element();
+                    app_state.set_selected_kind_default();
                 },
-                on:keydown= move |event| {
-                    tracing::info!("Key down at ({:?})", event);
-                }
             )
         }
     )

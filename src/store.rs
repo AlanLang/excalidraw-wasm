@@ -2,7 +2,7 @@ use std::sync::atomic::AtomicU32;
 
 use sycamore::reactive::{create_rc_signal, RcSignal};
 
-use crate::widget::{create_widget, shape::Rect, WidgetKind};
+use crate::widget::{shape::Rect, WidgetKind};
 
 static NEXT_ELEMENT_ID: std::sync::atomic::AtomicU32 = AtomicU32::new(1);
 
@@ -32,6 +32,10 @@ pub struct AppState {
 impl AppState {
     pub fn set_selected_kind(&self, kind: WidgetKind) {
         self.selected_kind.set(kind);
+    }
+
+    pub fn set_selected_kind_default(&self) {
+        self.selected_kind.set(WidgetKind::Selection)
     }
 
     pub fn add_element(&self) -> u32 {
@@ -78,6 +82,13 @@ impl AppState {
         self.elements
             .modify()
             .retain(|element| !element.get().is_selected);
+    }
+
+    pub fn clear_selection_elements(&self) {
+        let elements = self.elements.get();
+        elements.iter().for_each(|re_element| {
+            re_element.modify().is_selected = false;
+        })
     }
 
     pub fn move_selected_elements(&self, arrow: ArrowDirection, step: i32) {
