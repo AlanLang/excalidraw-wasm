@@ -39,7 +39,6 @@ impl Painter {
             (rect.end_x - rect.start_x) as f64,
             (rect.end_y - rect.start_y) as f64,
         );
-        ctx.stroke();
         ctx.set_fill_style(fill_style.as_ref());
     }
 
@@ -96,6 +95,8 @@ impl Painter {
             let shape_string = element.shape_string.get();
             if element.kind == WidgetKind::Text {
                 self.draw_text(&html_canvas_element, &element);
+            } else if element.kind == WidgetKind::Selection {
+                self.draw_selection(&html_canvas_element, &element)
             } else {
                 ctx.translate(rect.start_x.into(), rect.start_y.into())
                     .unwrap();
@@ -104,9 +105,6 @@ impl Painter {
                 });
                 ctx.translate((-rect.start_x).into(), (-rect.start_y).into())
                     .unwrap();
-            }
-            if element.kind == WidgetKind::Selection {
-                self.draw_selection(&html_canvas_element, &element);
             }
             if element.is_selected {
                 self.draw_selection_border(&html_canvas_element, &element)
