@@ -720,7 +720,7 @@ function initSync(module) {
 
 async function init(input) {
     if (typeof input === 'undefined') {
-        input = new URL('excalidraw-wasm-ac281956bda556d8_bg.wasm', import.meta.url);
+        input = new URL('excalidraw-wasm-7d2d44792e977ec0_bg.wasm', import.meta.url);
     }
     const imports = getImports();
 
