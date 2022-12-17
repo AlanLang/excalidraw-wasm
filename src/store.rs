@@ -91,6 +91,15 @@ impl AppState {
         })
     }
 
+    pub fn set_element_selected(&self, id: u32, is_selected: bool) {
+        let elements = self.elements.get();
+        let index = elements
+            .iter()
+            .position(|element| element.get().id == id)
+            .unwrap();
+        elements[index].modify().is_selected = is_selected;
+    }
+
     pub fn move_selected_elements(&self, arrow: ArrowDirection, step: i32) {
         tracing::info!("Moving selected elements");
         let elements = self.elements.get();

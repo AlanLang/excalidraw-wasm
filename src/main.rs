@@ -96,10 +96,11 @@ fn App<'a, G: Html>(ctx: Scope<'a>) -> View<G> {
 
                     if *app_state.selected_kind.get() == WidgetKind::Text {
                         let (rect, text) = get_text_info(canvas_ref,x,y);
-                        if text != "" {
+                        if text == "" {
                             return;
                         }
                         app_state.update_element(id, rect, vec![text]);
+                        app_state.set_element_selected(id, true);
                         return;
                     }
                     // tracing::info!("Mouse down at ({}, {})", x, y);
@@ -121,11 +122,14 @@ fn App<'a, G: Html>(ctx: Scope<'a>) -> View<G> {
                     }
                 },
                 on:mouseup= move |event| {
+                    let (id, _, _) = *drawing_state.get();
                     drawing_state.set((0, 0, 0));
                     let mouse_event = event.dyn_into::<MouseEvent>().unwrap();
                     let x = mouse_event.offset_x();
                     let y = mouse_event.offset_y();
                     tracing::info!("Mouse up at ({}, {})", x, y);
+                    let can_be_selected = *app_state.selected_kind.get() != WidgetKind::Selection;
+                    app_state.set_element_selected(id, can_be_selected);
                     app_state.delete_selection_element();
                     app_state.set_selected_kind_default();
                 },
