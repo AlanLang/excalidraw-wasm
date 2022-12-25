@@ -122,6 +122,6 @@ impl Painter {
             .expect("should cast to context");
         let canvas_width = html_canvas_element.width();
         let canvas_height = html_canvas_element.height();
-        ctx.clear_rect(0.0, 0.0, canvas_width as f64, canvas_height as f64);
+        ctx.clear_rect(-0.5, -0.5, canvas_width as f64, canvas_height as f64);
     }
 }
