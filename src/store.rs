@@ -102,7 +102,7 @@ impl AppState {
 
     pub fn move_selected_elements(&self, arrow: ArrowDirection, step: i32) {
         tracing::info!("Moving selected elements");
-        let elements = self.elements.get();
+        let elements = self.elements.take_silent();
         elements.iter().for_each(|re_element| {
             let element = re_element.get();
             if element.is_selected {
@@ -126,5 +126,6 @@ impl AppState {
                 }
             }
         });
+        self.elements.set(elements.to_vec());
     }
 }
