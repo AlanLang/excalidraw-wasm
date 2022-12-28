@@ -529,6 +529,14 @@ video {
   left: 0px;
 }
 
+.cursor-move {
+  cursor: move;
+}
+
+.cursor-auto {
+  cursor: auto;
+}
+
 .cursor-pointer {
   cursor: pointer;
 }
