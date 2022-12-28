@@ -128,4 +128,18 @@ impl AppState {
         });
         self.elements.set(elements.to_vec());
     }
+
+    pub fn move_elements(&self, offset_x: i32, offset_y: i32) {
+        let elements = self.elements.take_silent();
+        elements.iter().for_each(|re_element| {
+            let element = re_element.get();
+            if element.is_selected {
+                re_element.modify().rect.start_x += offset_x;
+                re_element.modify().rect.end_x += offset_x;
+                re_element.modify().rect.start_y += offset_y;
+                re_element.modify().rect.end_y += offset_y;
+            }
+        });
+        self.elements.set(elements.to_vec());
+    }
 }

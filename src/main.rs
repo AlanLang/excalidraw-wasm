@@ -29,6 +29,7 @@ fn App<'a, G: Html>(ctx: Scope<'a>) -> View<G> {
     let painter = Painter::new();
 
     let drawing_state = create_signal(ctx, (0, 0, 0));
+    let is_dragging = create_signal(ctx, (false, 0, 0));
 
     let app_state = AppState {
         selected_kind: create_rc_signal(WidgetKind::Selection),
@@ -79,6 +80,23 @@ fn App<'a, G: Html>(ctx: Scope<'a>) -> View<G> {
         }
     });
 
+    create_effect(ctx, move || {
+        let window = web_sys::window().expect("should have a window in this context");
+        let document = window.document().expect("should have a document on window");
+        let (dragging, _, _) = *is_dragging.get();
+        if dragging {
+            document
+                .document_element()
+                .unwrap()
+                .set_class_name("cursor-move");
+        } else {
+            document
+                .document_element()
+                .unwrap()
+                .set_class_name("cursor-auto");
+        }
+    });
+
     view! (ctx,
         div {
             Toolbar()
@@ -104,14 +122,41 @@ fn App<'a, G: Html>(ctx: Scope<'a>) -> View<G> {
                         return;
                     }
                     // tracing::info!("Mouse down at ({}, {})", x, y);
+
+                    // 如果当前是选择模式，且鼠标在某个元素上，则准备进入拖动模式
+                    if *app_state.selected_kind.get() == WidgetKind::Selection {
+                        let elements = app_state.elements.get();
+                        let point_in_some_element = elements.iter().any(|rc_element| {
+                            let element = rc_element.get();
+                            let rect = element.rect;
+                            element.is_selected && rect.is_in_point(x,y)
+                        });
+                        if point_in_some_element {
+                            is_dragging.set((true, x, y));
+                        }
+                    }
+
                     drawing_state.set((id, x, y));
                 },
                 on:mousemove= move |event| {
                     let (id, start_x, start_y) = *drawing_state.get();
+                    let (dragging, d_x, d_y) = *is_dragging.get();
+                    let mouse_event = event.dyn_into::<MouseEvent>().unwrap();
+                    let x = mouse_event.offset_x();
+                    let y = mouse_event.offset_y();
+
+                    // 如果是拖动选中的组件
+                    if dragging {
+                        let offset_x = x - d_x;
+                        let offset_y = y - d_y;
+                        is_dragging.set((true, x, y));
+                        app_state.move_elements(offset_x, offset_y);
+                        return;
+                    }
+
+
                     if id > 0 {
-                        let mouse_event = event.dyn_into::<MouseEvent>().unwrap();
-                        let x = mouse_event.offset_x();
-                        let y = mouse_event.offset_y();
+
                         let widget = create_widget(*app_state.selected_kind.get(), Rect::new(start_x, start_y, x, y));
                         let config_string = widget.get_config();
                         if *app_state.selected_kind.get() == WidgetKind::Selection {
@@ -132,6 +177,7 @@ fn App<'a, G: Html>(ctx: Scope<'a>) -> View<G> {
                     app_state.set_element_selected(id, can_be_selected);
                     app_state.delete_selection_element();
                     app_state.set_selected_kind_default();
+                    is_dragging.set((false, 0, 0));
                 },
             )
         }
