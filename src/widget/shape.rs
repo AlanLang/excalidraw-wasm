@@ -36,4 +36,16 @@ impl Rect {
     pub fn get_height(&self) -> i32 {
         self.end_y - self.start_y
     }
+
+    /**
+     * Check if a point is inside the rectangle
+     */
+    pub fn is_in_point(&self, x: i32, y: i32) -> bool {
+        if x > self.start_x && x < self.end_x {
+            if y > self.start_y && y < self.end_y {
+                return true;
+            }
+        }
+        return false;
+    }
 }
