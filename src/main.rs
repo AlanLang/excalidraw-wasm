@@ -1,7 +1,7 @@
 use lib::{
     painter::Painter,
     store::{AppState, ArrowDirection},
-    view::toolbar::Toolbar,
+    view::{export::ExportTool, toolbar::Toolbar},
     widget::{create_widget, shape::Rect, WidgetKind},
 };
 use sycamore::prelude::*;
@@ -34,6 +34,7 @@ fn App<'a, G: Html>(ctx: Scope<'a>) -> View<G> {
     let app_state = AppState {
         selected_kind: create_rc_signal(WidgetKind::Selection),
         elements: create_rc_signal(vec![]),
+        export_config: create_rc_signal(Default::default()),
     };
     let app_state = provide_context(ctx, app_state);
     let is_mounted = create_signal(ctx, false);
@@ -99,10 +100,11 @@ fn App<'a, G: Html>(ctx: Scope<'a>) -> View<G> {
 
     view! (ctx,
         div {
+            ExportTool()
             Toolbar()
             canvas(
                 ref=canvas_ref,
-                class="fixed top-10 left-0",
+                class="fixed top-15 left-0",
                 width=window_width,
                 height=window_height,
                 id="canvas",
