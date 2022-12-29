@@ -1,7 +1,7 @@
 use lib::{
     painter::Painter,
     store::{AppState, ArrowDirection},
-    view::toolbar::Toolbar,
+    view::{export::ExportTool, toolbar::Toolbar},
     widget::{create_widget, shape::Rect, WidgetKind},
 };
 use sycamore::prelude::*;
@@ -34,19 +34,20 @@ fn App<'a, G: Html>(ctx: Scope<'a>) -> View<G> {
     let app_state = AppState {
         selected_kind: create_rc_signal(WidgetKind::Selection),
         elements: create_rc_signal(vec![]),
+        export_config: create_rc_signal(Default::default()),
     };
     let app_state = provide_context(ctx, app_state);
     let is_mounted = create_signal(ctx, false);
 
     on_mount(ctx, || {
         let canvas: HtmlCanvasElement = canvas_ref.get::<DomNode>().unchecked_into();
-        let ctx = canvas
+        let canvas_ctx = canvas
             .get_context("2d")
             .expect("should get context")
             .unwrap()
             .dyn_into::<web_sys::CanvasRenderingContext2d>()
             .expect("should cast to context");
-        ctx.translate(0.5, 0.5).unwrap();
+        canvas_ctx.translate(0.5, 0.5).unwrap();
 
         let window = web_sys::window().expect("should have a window in this context");
         let app_state_cloned = app_state.clone();
@@ -99,10 +100,11 @@ fn App<'a, G: Html>(ctx: Scope<'a>) -> View<G> {
 
     view! (ctx,
         div {
+            ExportTool()
             Toolbar()
             canvas(
                 ref=canvas_ref,
-                class="fixed top-10 left-0",
+                class="fixed top-15 left-0",
                 width=window_width,
                 height=window_height,
                 id="canvas",

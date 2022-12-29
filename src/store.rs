@@ -23,10 +23,28 @@ pub struct Element {
     pub shape_string: RcSignal<Vec<String>>,
 }
 
+#[derive(Debug, Clone)]
+pub struct ExportConfig {
+    pub background: bool,
+    pub visible_area_only: bool,
+    pub padding: u32,
+}
+
+impl Default for ExportConfig {
+    fn default() -> Self {
+        Self {
+            background: false,
+            visible_area_only: true,
+            padding: 10,
+        }
+    }
+}
+
 #[derive(Debug, Default, Clone)]
 pub struct AppState {
     pub selected_kind: RcSignal<WidgetKind>,
     pub elements: RcSignal<Vec<RcSignal<Element>>>,
+    pub export_config: RcSignal<ExportConfig>,
 }
 
 impl AppState {
