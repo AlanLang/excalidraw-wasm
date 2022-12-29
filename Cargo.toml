@@ -26,7 +26,8 @@ features = [
     "MouseEvent",
     "TextMetrics",
     "FontFace",
-    "KeyboardEvent"
+    "KeyboardEvent",
+    "HtmlAnchorElement"
 ]
 
 [lib]
