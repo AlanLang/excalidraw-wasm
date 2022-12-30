@@ -118,6 +118,21 @@ impl AppState {
         elements[index].modify().is_selected = is_selected;
     }
 
+    pub fn set_element_in_point(&self, x: i32, y: i32) {
+        let elements = self.elements.get();
+        let mut can_select = true;
+
+        elements.iter().rev().for_each(|re_element| {
+            let element = re_element.get();
+            if element.rect.is_in_point(x, y) {
+                re_element.modify().is_selected = can_select;
+                can_select = false;
+            } else {
+                re_element.modify().is_selected = false;
+            }
+        });
+    }
+
     pub fn move_selected_elements(&self, arrow: ArrowDirection, step: i32) {
         tracing::info!("Moving selected elements");
         let elements = self.elements.take_silent();
