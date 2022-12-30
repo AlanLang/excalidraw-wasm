@@ -1,6 +1,6 @@
 use lib::{
     painter::Painter,
-    store::{AppState, ArrowDirection},
+    store::AppState,
     view::{export::ExportTool, toolbar::Toolbar},
     widget::{create_widget, shape::Rect, WidgetKind},
 };
@@ -55,12 +55,10 @@ fn App<'a, G: Html>(ctx: Scope<'a>) -> View<G> {
             let step: i32 = event.shift_key().then(|| 10).unwrap_or(1);
             match event.key().as_str() {
                 "Backspace" => app_state_cloned.delete_selected_elements(),
-                "ArrowLeft" => app_state_cloned.move_selected_elements(ArrowDirection::Left, step),
-                "ArrowRight" => {
-                    app_state_cloned.move_selected_elements(ArrowDirection::Right, step)
-                }
-                "ArrowUp" => app_state_cloned.move_selected_elements(ArrowDirection::Up, step),
-                "ArrowDown" => app_state_cloned.move_selected_elements(ArrowDirection::Down, step),
+                "ArrowLeft" => app_state_cloned.move_selected_elements(-step, 0),
+                "ArrowRight" => app_state_cloned.move_selected_elements(step, 0),
+                "ArrowUp" => app_state_cloned.move_selected_elements(0, -step),
+                "ArrowDown" => app_state_cloned.move_selected_elements(0, step),
                 _ => (),
             };
         };
@@ -104,7 +102,6 @@ fn App<'a, G: Html>(ctx: Scope<'a>) -> View<G> {
             Toolbar()
             canvas(
                 ref=canvas_ref,
-                class="fixed top-15 left-0",
                 width=window_width,
                 height=window_height,
                 id="canvas",
@@ -152,7 +149,7 @@ fn App<'a, G: Html>(ctx: Scope<'a>) -> View<G> {
                         let offset_x = x - d_x;
                         let offset_y = y - d_y;
                         is_dragging.set((true, x, y));
-                        app_state.move_elements(offset_x, offset_y);
+                        app_state.move_selected_elements(offset_x, offset_y);
                         return;
                     }
 

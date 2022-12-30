@@ -1,8 +1,6 @@
+use crate::store::AppState;
 use sycamore::prelude::*;
 use wasm_bindgen::{JsCast, JsValue};
-use web_sys::HtmlCanvasElement;
-
-use crate::store::AppState;
 
 #[component]
 pub fn ExportTool<G: Html>(ctx: Scope) -> View<G> {

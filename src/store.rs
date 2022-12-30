@@ -133,36 +133,10 @@ impl AppState {
         });
     }
 
-    pub fn move_selected_elements(&self, arrow: ArrowDirection, step: i32) {
-        tracing::info!("Moving selected elements");
-        let elements = self.elements.take_silent();
-        elements.iter().for_each(|re_element| {
-            let element = re_element.get();
-            if element.is_selected {
-                match arrow {
-                    ArrowDirection::Left => {
-                        re_element.modify().rect.start_x -= step;
-                        re_element.modify().rect.end_x -= step;
-                    }
-                    ArrowDirection::Right => {
-                        re_element.modify().rect.start_x += step;
-                        re_element.modify().rect.end_x += step;
-                    }
-                    ArrowDirection::Up => {
-                        re_element.modify().rect.start_y -= step;
-                        re_element.modify().rect.end_y -= step;
-                    }
-                    ArrowDirection::Down => {
-                        re_element.modify().rect.start_y += step;
-                        re_element.modify().rect.end_y += step;
-                    }
-                }
-            }
-        });
-        self.elements.set(elements.to_vec());
-    }
-
-    pub fn move_elements(&self, offset_x: i32, offset_y: i32) {
+    /**
+     * 移动选中的元素
+     */
+    pub fn move_selected_elements(&self, offset_x: i32, offset_y: i32) {
         let elements = self.elements.take_silent();
         elements.iter().for_each(|re_element| {
             let element = re_element.get();
