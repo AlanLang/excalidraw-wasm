@@ -371,15 +371,15 @@ imports.wbg.__wbg_error_f851667af71bcfc6 = function(arg0, arg1) {
 if (arg0 !== 0) { wasm.__wbindgen_free(arg0, arg1); }
 console.error(v0);
 };
-imports.wbg.__wbg_rectangle_f49b8eca2e92d06d = function(arg0, arg1, arg2, arg3, arg4) {
-    const ret = painter.rectangle(arg1, arg2, arg3, arg4);
+imports.wbg.__wbg_ellipse_57c4025dbd07a17c = function(arg0, arg1, arg2, arg3, arg4) {
+    const ret = painter.ellipse(arg1, arg2, arg3, arg4);
     const ptr0 = passStringToWasm0(ret, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
     const len0 = WASM_VECTOR_LEN;
     getInt32Memory0()[arg0 / 4 + 1] = len0;
     getInt32Memory0()[arg0 / 4 + 0] = ptr0;
 };
-imports.wbg.__wbg_ellipse_57c4025dbd07a17c = function(arg0, arg1, arg2, arg3, arg4) {
-    const ret = painter.ellipse(arg1, arg2, arg3, arg4);
+imports.wbg.__wbg_rectangle_f49b8eca2e92d06d = function(arg0, arg1, arg2, arg3, arg4) {
+    const ret = painter.rectangle(arg1, arg2, arg3, arg4);
     const ptr0 = passStringToWasm0(ret, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
     const len0 = WASM_VECTOR_LEN;
     getInt32Memory0()[arg0 / 4 + 1] = len0;
@@ -778,7 +778,7 @@ function initSync(module) {
 
 async function init(input) {
     if (typeof input === 'undefined') {
-        input = new URL('excalidraw-wasm-685c6b8b836e231a_bg.wasm', import.meta.url);
+        input = new URL('excalidraw-wasm-79d069d863620b92_bg.wasm', import.meta.url);
     }
     const imports = getImports();
 
