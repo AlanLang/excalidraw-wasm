@@ -166,17 +166,14 @@ fn App<'a, G: Html>(ctx: Scope<'a>) -> View<G> {
                     }
                 },
                 on:mouseup= move |event| {
-                    let (id, _, _) = *drawing_state.get();
-                    let (dragging, _, _) = *is_dragging.get();
+                    let (id, start_x, start_y) = *drawing_state.get();
                     let mouse_event = event.dyn_into::<MouseEvent>().unwrap();
                     let x = mouse_event.offset_x();
                     let y = mouse_event.offset_y();
-                    tracing::info!("Mouse up at ({}, {})", x, y);
-                    drawing_state.set((0, 0, 0));
-                    is_dragging.set((false, 0, 0));
+                    let has_dragged = start_x != x || start_y != y;
 
                     // 如果处于选中模式，且鼠标仅是点击，则选中当前位置的组件
-                    if !dragging && *app_state.selected_kind.get() == WidgetKind::Selection {
+                    if !has_dragged && *app_state.selected_kind.get() == WidgetKind::Selection {
                         app_state.set_element_in_point(x, y);
                     } else {
                         let can_be_selected = *app_state.selected_kind.get() != WidgetKind::Selection;
@@ -185,6 +182,8 @@ fn App<'a, G: Html>(ctx: Scope<'a>) -> View<G> {
 
                     app_state.delete_selection_element();
                     app_state.set_selected_kind_default();
+                    drawing_state.set((0, 0, 0));
+                    is_dragging.set((false, 0, 0));
                 },
             )
         }
