@@ -1,23 +1,6 @@
 use sycamore::reactive::{Modify, RcSignal};
 
-use crate::model::{rect::Rect, widget_kind::WidgetKind, AppData};
-
-#[derive(Debug, Clone, Copy, PartialEq)]
-pub enum ArrowDirection {
-    Left,
-    Right,
-    Up,
-    Down,
-}
-
-#[derive(Debug, Clone)]
-pub struct Element {
-    pub id: u32,
-    pub is_selected: bool,
-    pub kind: WidgetKind,
-    pub rect: Rect,
-    pub shape_string: RcSignal<Vec<String>>,
-}
+use crate::model::{widget_kind::WidgetKind, AppData};
 
 #[derive(Debug, Clone)]
 pub struct ExportConfig {
