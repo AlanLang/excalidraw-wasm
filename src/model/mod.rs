@@ -24,6 +24,12 @@ impl AppData {
         self.elements.iter_mut().find(|e| e.id == id)
     }
 
+    pub fn get_element_by_point_mut(&mut self, x: i32, y: i32) -> Option<&mut Element> {
+        self.elements
+            .iter_mut()
+            .find(|element| element.rect.is_in_point(x, y))
+    }
+
     pub fn get_element_by_point(&self, x: i32, y: i32) -> Option<&Element> {
         self.elements
             .iter()
