@@ -47,6 +47,12 @@ impl AppData {
             .for_each(|element| element.set_selected(false));
     }
 
+    pub fn select_element(&mut self, id: u32) {
+        self.elements
+            .iter_mut()
+            .for_each(|element| element.set_selected(element.id == id));
+    }
+
     pub fn move_selected_elements(&mut self, offset_x: i32, offset_y: i32) {
         self.elements
             .iter_mut()

@@ -166,19 +166,27 @@ fn App<'a, G: Html>(ctx: Scope<'a>) -> View<G> {
                     }
                 },
                 on:mouseup= move |event| {
-                    let (id, _, _) = *drawing_state.get();
+                    let (id, start_x, start_y) = *drawing_state.get();
                     let mouse_event = event.dyn_into::<MouseEvent>().unwrap();
                     let x = mouse_event.offset_x();
                     let y = mouse_event.offset_y();
-
                     let mut app_data = app_state.get_data();
                     app_data.clean();
+                    let has_dragged = start_x != x || start_y != y;
 
                     // 如果是在绘制图形，则在绘制完毕后选中该图形
                     if *app_state.selected_kind.get() != WidgetKind::Selection {
                         app_data.clean_selected_state();
                         if let Some(element) = app_data.get_element_mut(id) {
                             element.set_selected(true);
+                        }
+                    }
+
+                    if !has_dragged && *app_state.selected_kind.get() == WidgetKind::Selection {
+                        if let Some(point_in_some_element) = app_state.app_data.get().get_element_by_point(x,y) {
+                            app_data.select_element(point_in_some_element.id);
+                        } else {
+                            app_data.clean_selected_state();
                         }
                     }
 
