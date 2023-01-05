@@ -1,9 +1,11 @@
 use std::sync::atomic::AtomicU32;
 
+use serde::{Deserialize, Serialize};
+
 use super::{rect::Rect, widget_kind::WidgetKind};
 static NEXT_ELEMENT_ID: std::sync::atomic::AtomicU32 = AtomicU32::new(1);
 
-#[derive(Debug, Default, Clone)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize)]
 pub struct Element {
     pub id: u32,
     pub is_selected: bool,

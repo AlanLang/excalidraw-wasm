@@ -1,5 +1,7 @@
 use lib::{
-    model::{rect::Rect, widget_kind::WidgetKind, AppData},
+    event::add_event_listener,
+    model::{element::Element, rect::Rect, widget_kind::WidgetKind, AppData},
+    storage::{read_data, save_data},
     store::AppState,
     view::{export::ExportTool, toolbar::Toolbar},
     widget::create_widget,
@@ -47,8 +49,8 @@ fn App<'a, G: Html>(ctx: Scope<'a>) -> View<G> {
             .expect("should cast to context");
         canvas_ctx.translate(0.5, 0.5).unwrap();
 
-        let window = web_sys::window().expect("should have a window in this context");
         let app_state_cloned = app_state.clone();
+
         let handler = move |event: KeyboardEvent| {
             let step: i32 = event.shift_key().then(|| 10).unwrap_or(1);
             match event.key().as_str() {
@@ -60,13 +62,27 @@ fn App<'a, G: Html>(ctx: Scope<'a>) -> View<G> {
                 _ => (),
             };
         };
-        let closure = Closure::wrap(Box::new(handler) as Box<dyn FnMut(_)>);
+        add_event_listener("keydown", handler);
 
-        window
-            .add_event_listener_with_callback("keydown", closure.as_ref().unchecked_ref())
-            .unwrap();
+        let app_state_cloned = app_state.clone();
+        let on_copy = move |_| {
+            save_data(app_state_cloned.app_data.get().as_ref());
+        };
+        add_event_listener("copy", on_copy);
 
-        closure.forget();
+        let app_state_cloned = app_state.clone();
+        let on_paste = move |_| {
+            if let Some(app_data) = read_data() {
+                let mut app = app_state_cloned.get_data();
+                app_data.elements.iter().for_each(|element| {
+                    let mut element = Element::from(element.clone());
+                    element.move_element(10, 10);
+                    app.add_element(element);
+                });
+                app.draw();
+            }
+        };
+        add_event_listener("paste", on_paste);
     });
 
     create_effect(ctx, move || {
