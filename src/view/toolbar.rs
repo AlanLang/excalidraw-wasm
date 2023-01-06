@@ -1,6 +1,6 @@
 use sycamore::prelude::*;
 
-use crate::{store::AppState, widget::WidgetKind};
+use crate::{model::widget_kind::WidgetKind, store::AppState};
 
 #[component]
 pub fn Toolbar<G: Html>(ctx: Scope) -> View<G> {
