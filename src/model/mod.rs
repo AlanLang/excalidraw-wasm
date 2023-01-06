@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use wasm_bindgen::JsCast;
 
-use crate::draw_scene::draw_scene;
+use crate::{draw_scene::draw_scene, utils::hit_test::hit_test};
 
 use self::{element::Element, rect::Rect, widget_kind::WidgetKind};
 
@@ -32,7 +32,7 @@ impl AppData {
     pub fn get_element_by_point_mut(&mut self, x: i32, y: i32) -> Option<&mut Element> {
         self.elements
             .iter_mut()
-            .find(|element| element.rect.is_in_point(x, y))
+            .find(|element| hit_test(element, x, y))
     }
 
     pub fn get_element_by_point(&self, x: i32, y: i32) -> Option<&Element> {
