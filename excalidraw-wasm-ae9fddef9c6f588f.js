@@ -731,16 +731,16 @@ imports.wbg.__wbindgen_debug_string = function(arg0, arg1) {
 imports.wbg.__wbindgen_throw = function(arg0, arg1) {
     throw new Error(getStringFromWasm0(arg0, arg1));
 };
-imports.wbg.__wbindgen_closure_wrapper333 = function(arg0, arg1, arg2) {
-    const ret = makeMutClosure(arg0, arg1, 131, __wbg_adapter_22);
+imports.wbg.__wbindgen_closure_wrapper324 = function(arg0, arg1, arg2) {
+    const ret = makeMutClosure(arg0, arg1, 127, __wbg_adapter_22);
     return addHeapObject(ret);
 };
-imports.wbg.__wbindgen_closure_wrapper335 = function(arg0, arg1, arg2) {
-    const ret = makeClosure(arg0, arg1, 131, __wbg_adapter_25);
+imports.wbg.__wbindgen_closure_wrapper326 = function(arg0, arg1, arg2) {
+    const ret = makeClosure(arg0, arg1, 127, __wbg_adapter_25);
     return addHeapObject(ret);
 };
-imports.wbg.__wbindgen_closure_wrapper337 = function(arg0, arg1, arg2) {
-    const ret = makeMutClosure(arg0, arg1, 131, __wbg_adapter_22);
+imports.wbg.__wbindgen_closure_wrapper328 = function(arg0, arg1, arg2) {
+    const ret = makeMutClosure(arg0, arg1, 127, __wbg_adapter_22);
     return addHeapObject(ret);
 };
 
@@ -778,7 +778,7 @@ function initSync(module) {
 
 async function init(input) {
     if (typeof input === 'undefined') {
-        input = new URL('excalidraw-wasm-ef19bcac15d92a5f_bg.wasm', import.meta.url);
+        input = new URL('excalidraw-wasm-ae9fddef9c6f588f_bg.wasm', import.meta.url);
     }
     const imports = getImports();
 
