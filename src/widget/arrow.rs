@@ -15,6 +15,16 @@ impl Arrow {
 
 impl Shape for Arrow {
     fn get_config(&self) -> Vec<String> {
+        let (x1, y1, x2, y2, x3, y3, x4, y4) = self.get_lines();
+        let config1 = Rough::generator_line(x3, y3, x2, y2);
+        let config2 = Rough::generator_line(x1, y1, x2, y2);
+        let config3 = Rough::generator_line(x4, y4, x2, y2);
+        [config1, config2, config3].to_vec()
+    }
+}
+
+impl Arrow {
+    pub fn get_lines(&self) -> (f32, f32, f32, f32, f32, f32, f32, f32) {
         let width = (self.rect.get_width()) as f32;
         let height = (self.rect.get_height()) as f32;
 
@@ -33,10 +43,7 @@ impl Shape for Arrow {
         let angle = 20 as f32; // degrees
         let [x3, y3] = rotate(xs, ys, x2, y2, (-angle * std::f32::consts::PI) / 180.0);
         let [x4, y4] = rotate(xs, ys, x2, y2, (angle * std::f32::consts::PI) / 180.0);
-        let config1 = Rough::generator_line(x3, y3, x2, y2);
-        let config2 = Rough::generator_line(x1, y1, x2, y2);
-        let config3 = Rough::generator_line(x4, y4, x2, y2);
-        [config1, config2, config3].to_vec()
+        (x1, y1, x2, y2, x3, y3, x4, y4)
     }
 }
 

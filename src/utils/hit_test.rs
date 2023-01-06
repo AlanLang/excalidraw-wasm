@@ -1,4 +1,7 @@
-use crate::model::{element::Element, widget_kind::WidgetKind};
+use crate::{
+    model::{element::Element, widget_kind::WidgetKind},
+    widget::arrow::Arrow,
+};
 
 const LINE_THRESHOLD: f32 = 10.0;
 
@@ -8,8 +11,19 @@ pub fn hit_test(element: &Element, x: i32, y: i32) -> bool {
         // There doesn't seem to be a closed form solution for the distance between
         // a point and an ellipse, let's assume it's a rectangle for now...
         WidgetKind::Ellipse => hit_test_by_rectangle(element, x, y),
+        WidgetKind::Arrow => hit_test_by_arrow(element, x, y),
         _ => unimplemented!(),
     }
+}
+
+fn hit_test_by_arrow(element: &Element, x: i32, y: i32) -> bool {
+    let arrow = Arrow::new(element.rect);
+    let (x1, y1, x2, y2, x3, y3, x4, y4) = arrow.get_lines();
+    let x = x as f32;
+    let y = y as f32;
+    distance_between_point_and_segment(x, y, x3, y3, x2, y2) < LINE_THRESHOLD
+        || distance_between_point_and_segment(x, y, x1, y1, x2, y2) < LINE_THRESHOLD
+        || distance_between_point_and_segment(x, y, x4, y4, x2, y2) < LINE_THRESHOLD
 }
 
 fn hit_test_by_rectangle(element: &Element, x: i32, y: i32) -> bool {
