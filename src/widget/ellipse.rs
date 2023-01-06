@@ -1,6 +1,6 @@
-use crate::rough::Rough;
+use crate::{model::rect::Rect, rough::Rough};
 
-use super::shape::{Rect, Shape};
+use super::shape::Shape;
 
 #[derive(Debug, Clone, Copy)]
 pub struct Ellipse {

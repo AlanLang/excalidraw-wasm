@@ -59,7 +59,7 @@ pub fn ExportTool<G: Html>(ctx: Scope) -> View<G> {
 }
 
 fn export_as_png(app_state: &AppState) {
-    let elements = app_state.elements.get();
+    let app_data = app_state.app_data.get();
     let export_config = app_state.export_config.get();
 
     let mut sub_canvas_x1 = i32::MAX;
@@ -67,8 +67,7 @@ fn export_as_png(app_state: &AppState) {
     let mut sub_canvas_y1 = i32::MAX;
     let mut sub_canvas_y2 = 0;
 
-    elements.iter().for_each(|re_element| {
-        let element = re_element.get();
+    app_data.elements.iter().for_each(|element| {
         sub_canvas_x1 = sub_canvas_x1.min(element.rect.start_x.min(element.rect.end_x));
         sub_canvas_x2 = sub_canvas_x2.max(element.rect.start_x.max(element.rect.end_x));
         sub_canvas_y1 = sub_canvas_y1.min(element.rect.start_y.min(element.rect.end_y));

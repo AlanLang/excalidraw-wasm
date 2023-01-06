@@ -1,8 +1,8 @@
 use lib::{
-    painter::Painter,
+    model::{rect::Rect, widget_kind::WidgetKind, AppData},
     store::AppState,
     view::{export::ExportTool, toolbar::Toolbar},
-    widget::{create_widget, shape::Rect, WidgetKind},
+    widget::create_widget,
 };
 use sycamore::prelude::*;
 use wasm_bindgen::{prelude::Closure, JsCast};
@@ -26,18 +26,16 @@ fn App<'a, G: Html>(ctx: Scope<'a>) -> View<G> {
     let window_height = window.inner_height().unwrap().as_f64().unwrap();
 
     let canvas_ref: &NodeRef<G> = create_node_ref(ctx);
-    let painter = Painter::new();
 
     let drawing_state = create_signal(ctx, (0, 0, 0));
     let is_dragging = create_signal(ctx, (false, 0, 0));
 
     let app_state = AppState {
         selected_kind: create_rc_signal(WidgetKind::Selection),
-        elements: create_rc_signal(vec![]),
         export_config: create_rc_signal(Default::default()),
+        app_data: create_rc_signal(AppData::default()),
     };
     let app_state = provide_context(ctx, app_state);
-    let is_mounted = create_signal(ctx, false);
 
     on_mount(ctx, || {
         let canvas: HtmlCanvasElement = canvas_ref.get::<DomNode>().unchecked_into();
@@ -69,14 +67,6 @@ fn App<'a, G: Html>(ctx: Scope<'a>) -> View<G> {
             .unwrap();
 
         closure.forget();
-        is_mounted.set(true);
-    });
-
-    create_effect(ctx, move || {
-        if *is_mounted.get() {
-            let elements = app_state.elements.get();
-            painter.draw_elements(canvas_ref, elements);
-        }
     });
 
     create_effect(ctx, move || {
@@ -106,33 +96,37 @@ fn App<'a, G: Html>(ctx: Scope<'a>) -> View<G> {
                 height=window_height,
                 id="canvas",
                 on:mousedown= move |event|  {
-                    let id = app_state.add_element();
                     let mouse_event = event.dyn_into::<MouseEvent>().unwrap();
                     let x = mouse_event.offset_x();
                     let y = mouse_event.offset_y();
+                    let selected_kind = *app_state.selected_kind.get();
+                    let mut app_data = app_state.get_data();
+                    let element = app_data.create_element(selected_kind);
+
+                    let id = element.id;
 
                     if *app_state.selected_kind.get() == WidgetKind::Text {
                         let (rect, text) = get_text_info(canvas_ref,x,y);
                         if text == "" {
                             return;
                         }
-                        app_state.update_element(id, rect, vec![text]);
-                        app_state.set_element_selected(id, true);
+                        if let Some(element) = app_data.get_element_mut(id) {
+                            element.update_rect(rect.start_x, rect.start_y, rect.end_x, rect.end_y);
+                            element.update_shape_string(vec![text]);
+                            element.set_selected(true);
+                        }
                         return;
                     }
                     // tracing::info!("Mouse down at ({}, {})", x, y);
 
                     // 如果当前是选择模式，且鼠标在某个元素上，则准备进入拖动模式
                     if *app_state.selected_kind.get() == WidgetKind::Selection {
-                        let elements = app_state.elements.get();
-                        let point_in_some_element = elements.iter().any(|rc_element| {
-                            let element = rc_element.get();
-                            let rect = element.rect;
-                            element.is_selected && rect.is_in_point(x,y)
-                        });
-                        if point_in_some_element {
+                        let point_in_some_element = app_data.get_element_by_point(x,y);
+                        if point_in_some_element.is_some() {
                             is_dragging.set((true, x, y));
                         }
+                    } else {
+                        app_data.clean_selected_state(); // 清理当前的选中状态
                     }
 
                     drawing_state.set((id, x, y));
@@ -143,26 +137,32 @@ fn App<'a, G: Html>(ctx: Scope<'a>) -> View<G> {
                     let mouse_event = event.dyn_into::<MouseEvent>().unwrap();
                     let x = mouse_event.offset_x();
                     let y = mouse_event.offset_y();
+                    let mut app_data = app_state.get_data();
 
                     // 如果是拖动选中的组件
                     if dragging {
                         let offset_x = x - d_x;
                         let offset_y = y - d_y;
                         is_dragging.set((true, x, y));
-                        app_state.move_selected_elements(offset_x, offset_y);
+                        app_data.move_selected_elements(offset_x, offset_y);
+                        app_data.draw();
                         return;
                     }
 
 
                     if id > 0 {
-
                         let widget = create_widget(*app_state.selected_kind.get(), Rect::new(start_x, start_y, x, y));
                         let config_string = widget.get_config();
-                        if *app_state.selected_kind.get() == WidgetKind::Selection {
-                            app_state.update_element(id, fix_rect(Rect::new(start_x, start_y, x, y)), config_string);
-                        } else {
-                            app_state.update_element(id, Rect::new(start_x, start_y, x, y), config_string);
+                        let rect = fix_rect(Rect::new(start_x, start_y, x, y));
+                        if let Some(element) = app_data.get_element_mut(id) {
+                            element.update_rect(rect.start_x, rect.start_y, rect.end_x, rect.end_y);
+                            element.update_shape_string(config_string);
+                            if *app_state.selected_kind.get() == WidgetKind::Selection {
+                                app_data.select_elements(rect);
+                            }
                         }
+                        app_data.draw();
+                        return;
                     }
                 },
                 on:mouseup= move |event| {
@@ -170,17 +170,30 @@ fn App<'a, G: Html>(ctx: Scope<'a>) -> View<G> {
                     let mouse_event = event.dyn_into::<MouseEvent>().unwrap();
                     let x = mouse_event.offset_x();
                     let y = mouse_event.offset_y();
+                    let mut app_data = app_state.get_data();
+                    app_data.clean();
                     let has_dragged = start_x != x || start_y != y;
 
-                    // 如果处于选中模式，且鼠标仅是点击，则选中当前位置的组件
-                    if !has_dragged && *app_state.selected_kind.get() == WidgetKind::Selection {
-                        app_state.set_element_in_point(x, y);
-                    } else {
-                        let can_be_selected = *app_state.selected_kind.get() != WidgetKind::Selection;
-                        app_state.set_element_selected(id, can_be_selected);
+                    // 如果是在绘制图形，则在绘制完毕后选中该图形
+                    if *app_state.selected_kind.get() != WidgetKind::Selection {
+                        app_data.clean_selected_state();
+                        if let Some(element) = app_data.get_element_mut(id) {
+                            element.set_selected(true);
+                        }
                     }
 
-                    app_state.delete_selection_element();
+                    if !has_dragged && *app_state.selected_kind.get() == WidgetKind::Selection {
+                        if let Some(point_in_some_element) = app_data.get_element_by_point_mut(x,y) {
+                            let id = point_in_some_element.id;
+                            app_data.select_element(id);
+                        } else {
+                            app_data.clean_selected_state();
+                        }
+                    }
+
+                    app_data.draw();
+
+                    tracing::info!("Mouse up at ({}, {})", x, y);
                     app_state.set_selected_kind_default();
                     drawing_state.set((0, 0, 0));
                     is_dragging.set((false, 0, 0));
