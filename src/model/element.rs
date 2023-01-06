@@ -51,4 +51,16 @@ impl Element {
             self.rect.end_y + y,
         );
     }
+
+    pub fn from(element: &Element) -> Self {
+        let id = NEXT_ELEMENT_ID.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+
+        Self {
+            id,
+            is_selected: element.is_selected,
+            kind: element.kind.clone(),
+            rect: element.rect.clone(),
+            shape_string: element.shape_string.clone(),
+        }
+    }
 }

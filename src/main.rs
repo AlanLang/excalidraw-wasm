@@ -7,7 +7,7 @@ use lib::{
     widget::create_widget,
 };
 use sycamore::prelude::*;
-use wasm_bindgen::{prelude::Closure, JsCast};
+use wasm_bindgen::JsCast;
 use web_sys::{FontFace, HtmlCanvasElement, KeyboardEvent, MouseEvent};
 
 fn main() {
@@ -75,7 +75,7 @@ fn App<'a, G: Html>(ctx: Scope<'a>) -> View<G> {
             if let Some(app_data) = read_data() {
                 let mut app = app_state_cloned.get_data();
                 app_data.elements.iter().for_each(|element| {
-                    let mut element = Element::from(element.clone());
+                    let mut element = Element::from(element);
                     element.move_element(10, 10);
                     app.add_element(element);
                 });
