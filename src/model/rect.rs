@@ -1,4 +1,6 @@
-#[derive(Debug, Copy, Clone)]
+use serde::{Deserialize, Serialize};
+
+#[derive(Debug, Copy, Clone, Serialize, Deserialize)]
 pub struct Rect {
     pub start_x: i32,
     pub start_y: i32,

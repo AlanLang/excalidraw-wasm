@@ -1,9 +1,11 @@
 use std::sync::atomic::AtomicU32;
 
+use serde::{Deserialize, Serialize};
+
 use super::{rect::Rect, widget_kind::WidgetKind};
 static NEXT_ELEMENT_ID: std::sync::atomic::AtomicU32 = AtomicU32::new(1);
 
-#[derive(Debug, Default, Clone)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize)]
 pub struct Element {
     pub id: u32,
     pub is_selected: bool,
@@ -48,5 +50,17 @@ impl Element {
             self.rect.end_x + x,
             self.rect.end_y + y,
         );
+    }
+
+    pub fn from(element: &Element) -> Self {
+        let id = NEXT_ELEMENT_ID.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+
+        Self {
+            id,
+            is_selected: element.is_selected,
+            kind: element.kind.clone(),
+            rect: element.rect.clone(),
+            shape_string: element.shape_string.clone(),
+        }
     }
 }

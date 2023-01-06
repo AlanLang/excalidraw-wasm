@@ -1,3 +1,4 @@
+use serde::{Deserialize, Serialize};
 use wasm_bindgen::JsCast;
 
 use crate::draw_scene::draw_scene;
@@ -8,12 +9,16 @@ pub mod element;
 pub mod rect;
 pub mod widget_kind;
 
-#[derive(Debug, Default, Clone)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize)]
 pub struct AppData {
     pub elements: Vec<Element>,
 }
 
 impl AppData {
+    pub fn add_element(&mut self, element: Element) {
+        self.elements.push(element);
+    }
+
     pub fn create_element(&mut self, kind: WidgetKind) -> &Element {
         let element = Element::new(kind);
         self.elements.push(element);
@@ -63,6 +68,12 @@ impl AppData {
         self.elements
             .iter_mut()
             .filter(|element| element.is_selected)
+            .for_each(|element| element.move_element(offset_x, offset_y));
+    }
+
+    pub fn move_all_elements(&mut self, offset_x: i32, offset_y: i32) {
+        self.elements
+            .iter_mut()
             .for_each(|element| element.move_element(offset_x, offset_y));
     }
 
