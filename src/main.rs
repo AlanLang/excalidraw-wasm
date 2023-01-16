@@ -130,6 +130,7 @@ fn App<'a, G: Html>(ctx: Scope<'a>) -> View<G> {
                             element.update_rect(rect.start_x, rect.start_y, rect.end_x, rect.end_y);
                             element.update_shape_string(vec![text]);
                             element.set_selected(true);
+                            app_data.draw();
                         }
                         return;
                     }
