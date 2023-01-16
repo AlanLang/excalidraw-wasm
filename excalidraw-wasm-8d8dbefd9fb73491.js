@@ -531,6 +531,10 @@ imports.wbg.__wbg_offsetY_1f52082687af467b = function(arg0) {
     const ret = getObject(arg0).offsetY;
     return ret;
 };
+imports.wbg.__wbg_shiftKey_81014521a7612e6a = function(arg0) {
+    const ret = getObject(arg0).shiftKey;
+    return ret;
+};
 imports.wbg.__wbg_newwithstr_4232808229863e73 = function() { return handleError(function (arg0, arg1, arg2, arg3) {
     var v0 = getCachedStringFromWasm0(arg0, arg1);
     var v1 = getCachedStringFromWasm0(arg2, arg3);
@@ -748,15 +752,15 @@ imports.wbg.__wbindgen_debug_string = function(arg0, arg1) {
 imports.wbg.__wbindgen_throw = function(arg0, arg1) {
     throw new Error(getStringFromWasm0(arg0, arg1));
 };
-imports.wbg.__wbindgen_closure_wrapper339 = function(arg0, arg1, arg2) {
+imports.wbg.__wbindgen_closure_wrapper340 = function(arg0, arg1, arg2) {
     const ret = makeMutClosure(arg0, arg1, 131, __wbg_adapter_22);
     return addHeapObject(ret);
 };
-imports.wbg.__wbindgen_closure_wrapper341 = function(arg0, arg1, arg2) {
+imports.wbg.__wbindgen_closure_wrapper342 = function(arg0, arg1, arg2) {
     const ret = makeMutClosure(arg0, arg1, 131, __wbg_adapter_22);
     return addHeapObject(ret);
 };
-imports.wbg.__wbindgen_closure_wrapper343 = function(arg0, arg1, arg2) {
+imports.wbg.__wbindgen_closure_wrapper344 = function(arg0, arg1, arg2) {
     const ret = makeClosure(arg0, arg1, 131, __wbg_adapter_27);
     return addHeapObject(ret);
 };
@@ -795,7 +799,7 @@ function initSync(module) {
 
 async function init(input) {
     if (typeof input === 'undefined') {
-        input = new URL('excalidraw-wasm-6411db27002471b4_bg.wasm', import.meta.url);
+        input = new URL('excalidraw-wasm-8d8dbefd9fb73491_bg.wasm', import.meta.url);
     }
     const imports = getImports();
 
