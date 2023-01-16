@@ -58,10 +58,15 @@ impl AppData {
             .for_each(|element| element.set_selected(false));
     }
 
-    pub fn select_element(&mut self, id: u32) {
-        self.elements
-            .iter_mut()
-            .for_each(|element| element.set_selected(element.id == id));
+    pub fn select_element(&mut self, id: u32, add: bool) {
+        self.elements.iter_mut().for_each(|element| {
+            let need_select: bool = if add {
+                element.id == id || element.is_selected
+            } else {
+                element.id == id
+            };
+            element.set_selected(need_select)
+        });
     }
 
     pub fn move_selected_elements(&mut self, offset_x: i32, offset_y: i32) {

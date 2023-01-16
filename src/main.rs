@@ -201,7 +201,7 @@ fn App<'a, G: Html>(ctx: Scope<'a>) -> View<G> {
                     if !has_dragged && *app_state.selected_kind.get() == WidgetKind::Selection {
                         if let Some(point_in_some_element) = app_data.get_element_by_point_mut(x,y) {
                             let id = point_in_some_element.id;
-                            app_data.select_element(id);
+                            app_data.select_element(id, mouse_event.shift_key());
                         } else {
                             app_data.clean_selected_state();
                         }
