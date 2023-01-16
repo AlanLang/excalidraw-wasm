@@ -59,6 +59,7 @@ fn App<'a, G: Html>(ctx: Scope<'a>) -> View<G> {
                 "ArrowRight" => app_state_cloned.move_selected_elements(step, 0),
                 "ArrowUp" => app_state_cloned.move_selected_elements(0, -step),
                 "ArrowDown" => app_state_cloned.move_selected_elements(0, step),
+                "Escape" => app_state_cloned.clear_selection_elements(),
                 _ => (),
             };
         };
