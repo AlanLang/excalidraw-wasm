@@ -12,18 +12,28 @@ pub fn hit_test(element: &Element, x: i32, y: i32) -> bool {
         // a point and an ellipse, let's assume it's a rectangle for now...
         WidgetKind::Ellipse => hit_test_by_rectangle(element, x, y),
         WidgetKind::Arrow => hit_test_by_arrow(element, x, y),
+        WidgetKind::Text => hit_test_by_text(element, x, y),
         _ => unimplemented!(),
     }
 }
 
 fn hit_test_by_arrow(element: &Element, x: i32, y: i32) -> bool {
     let arrow = Arrow::new(element.rect);
-    let (x1, y1, x2, y2, x3, y3, x4, y4) = arrow.get_lines();
+    let (x1, y1, x2, y2, x3, y3, x4, y4) =
+        arrow.get_lines(element.rect.start_x, element.rect.start_y);
     let x = x as f32;
     let y = y as f32;
+    tracing::info!(
+        "{:?}",
+        distance_between_point_and_segment(x, y, x1, y1, x2, y2)
+    );
     distance_between_point_and_segment(x, y, x3, y3, x2, y2) < LINE_THRESHOLD
         || distance_between_point_and_segment(x, y, x1, y1, x2, y2) < LINE_THRESHOLD
         || distance_between_point_and_segment(x, y, x4, y4, x2, y2) < LINE_THRESHOLD
+}
+
+fn hit_test_by_text(element: &Element, x: i32, y: i32) -> bool {
+    element.rect.is_in_point(x, y)
 }
 
 fn hit_test_by_rectangle(element: &Element, x: i32, y: i32) -> bool {

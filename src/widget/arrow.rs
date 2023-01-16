@@ -15,7 +15,7 @@ impl Arrow {
 
 impl Shape for Arrow {
     fn get_config(&self) -> Vec<String> {
-        let (x1, y1, x2, y2, x3, y3, x4, y4) = self.get_lines();
+        let (x1, y1, x2, y2, x3, y3, x4, y4) = self.get_lines(0, 0);
         let config1 = Rough::generator_line(x3, y3, x2, y2);
         let config2 = Rough::generator_line(x1, y1, x2, y2);
         let config3 = Rough::generator_line(x4, y4, x2, y2);
@@ -24,14 +24,14 @@ impl Shape for Arrow {
 }
 
 impl Arrow {
-    pub fn get_lines(&self) -> (f32, f32, f32, f32, f32, f32, f32, f32) {
+    pub fn get_lines(&self, x: i32, y: i32) -> (f32, f32, f32, f32, f32, f32, f32, f32) {
         let width = (self.rect.get_width()) as f32;
         let height = (self.rect.get_height()) as f32;
 
-        let x1 = 0 as f32;
-        let y1 = 0 as f32;
-        let x2 = width;
-        let y2 = height;
+        let x1 = x as f32;
+        let y1 = y as f32;
+        let x2 = x1 + width;
+        let y2 = y1 + height;
 
         let size = 30 as f32; // pixels
         let distance = ((x2 - x1).powf(2.0) as f32 + (y2 - y1).powf(2.0) as f32).sqrt();
