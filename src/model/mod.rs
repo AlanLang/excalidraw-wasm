@@ -86,6 +86,12 @@ impl AppData {
         self.elements.retain(|element| !element.is_selected);
     }
 
+    pub fn select_all_elements(&mut self) {
+        self.elements
+            .iter_mut()
+            .for_each(|element| element.set_selected(true));
+    }
+
     pub fn draw(&self) {
         let window = web_sys::window().expect("no global `window` exists");
         let document = window.document().expect("should have a document on window");
