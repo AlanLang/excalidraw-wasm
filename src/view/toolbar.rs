@@ -53,7 +53,7 @@ fn ElementOption<G: Html>(ctx: Scope, props: ElementOptionProps) -> View<G> {
     });
 
     view! (ctx,
-        label(class="cursor-pointer") {
+        label(class="cursor-pointer select-none") {
             input(
                 class="cursor-pointer",
                 type="radio",

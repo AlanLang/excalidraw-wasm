@@ -24,7 +24,7 @@ pub fn ExportTool<G: Html>(ctx: Scope) -> View<G> {
         ) {
             "Export to png"
         }
-        label(class="mx-2") {
+        label(class="mx-2 cursor-pointer select-none") {
             input(
                 type="checkbox",
                 checked=app_state.export_config.get().background,
@@ -35,7 +35,7 @@ pub fn ExportTool<G: Html>(ctx: Scope) -> View<G> {
             )
             "background"
         }
-        label(class="mx-2") {
+        label(class="mx-2 cursor-pointer select-none") {
             input(
                 type="checkbox",
                 checked=app_state.export_config.get().visible_area_only,
@@ -46,7 +46,7 @@ pub fn ExportTool<G: Html>(ctx: Scope) -> View<G> {
             )
             "visible area only"
         }
-        label(class="mx-2") {
+        label(class="mx-2 select-none") {
             "(padding:"
             input(
                 class="border w-16",

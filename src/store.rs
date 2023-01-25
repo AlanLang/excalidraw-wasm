@@ -60,4 +60,10 @@ impl AppState {
         let app_data = self.app_data.modify();
         app_data
     }
+
+    pub fn select_all(&self) {
+        let mut app_data = self.get_data();
+        app_data.select_all_elements();
+        app_data.draw();
+    }
 }

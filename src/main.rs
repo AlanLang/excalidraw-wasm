@@ -60,6 +60,7 @@ fn App<'a, G: Html>(ctx: Scope<'a>) -> View<G> {
                 "ArrowUp" => app_state_cloned.move_selected_elements(0, -step),
                 "ArrowDown" => app_state_cloned.move_selected_elements(0, step),
                 "Escape" => app_state_cloned.clear_selection_elements(),
+                "a" if event.meta_key() => app_state_cloned.select_all(),
                 _ => (),
             };
         };
