@@ -3,7 +3,7 @@ use lib::{
     model::{element::Element, rect::Rect, widget_kind::WidgetKind, AppData},
     storage::{read_data, save_data},
     store::AppState,
-    view::{export::ExportTool, toolbar::Toolbar},
+    view::{config_bar::ConfigBar, export::ExportTool, toolbar::Toolbar},
     widget::create_widget,
 };
 use sycamore::prelude::*;
@@ -107,6 +107,7 @@ fn App<'a, G: Html>(ctx: Scope<'a>) -> View<G> {
     view! (ctx,
         div {
             ExportTool()
+            ConfigBar()
             Toolbar()
             canvas(
                 ref=canvas_ref,
