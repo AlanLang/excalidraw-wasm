@@ -35,6 +35,9 @@ fn App<'a, G: Html>(ctx: Scope<'a>) -> View<G> {
     let app_state = AppState {
         selected_kind: create_rc_signal(WidgetKind::Selection),
         export_config: create_rc_signal(Default::default()),
+        view_bg_color: create_rc_signal("#ffffff".into()),
+        item_stroke_color: create_rc_signal("#000000".into()),
+        item_bg_color: create_rc_signal("#000000".into()),
         app_data: create_rc_signal(AppData::default()),
     };
     let app_state = provide_context(ctx, app_state);
@@ -148,7 +151,6 @@ fn App<'a, G: Html>(ctx: Scope<'a>) -> View<G> {
                     } else {
                         app_data.clean_selected_state(); // 清理当前的选中状态
                     }
-
                     drawing_state.set((id, x, y));
                 },
                 on:mousemove= move |event| {

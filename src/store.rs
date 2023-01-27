@@ -23,6 +23,9 @@ impl Default for ExportConfig {
 pub struct AppState {
     pub selected_kind: RcSignal<WidgetKind>,
     pub export_config: RcSignal<ExportConfig>,
+    pub view_bg_color: RcSignal<String>,
+    pub item_stroke_color: RcSignal<String>,
+    pub item_bg_color: RcSignal<String>,
     pub app_data: RcSignal<AppData>,
 }
 
