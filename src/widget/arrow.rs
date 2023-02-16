@@ -2,14 +2,20 @@ use crate::{model::rect::Rect, rough::Rough};
 
 use super::shape::Shape;
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone)]
 pub struct Arrow {
     rect: Rect,
+    item_stroke_color: String,
+    item_bg_color: String,
 }
 
 impl Arrow {
-    pub fn new(rect: Rect) -> Arrow {
-        Arrow { rect }
+    pub fn new(rect: Rect, item_stroke_color: String, item_bg_color: String) -> Arrow {
+        Arrow {
+            rect,
+            item_stroke_color,
+            item_bg_color,
+        }
     }
 }
 

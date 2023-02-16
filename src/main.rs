@@ -173,7 +173,12 @@ fn App<'a, G: Html>(ctx: Scope<'a>) -> View<G> {
 
 
                     if id > 0 {
-                        let widget = create_widget(*app_state.selected_kind.get(), Rect::new(start_x, start_y, x, y));
+                        let widget = create_widget(
+                            *app_state.selected_kind.get(),
+                            Rect::new(start_x, start_y, x, y),
+                            app_state.item_stroke_color.to_string(),
+                            app_state.item_bg_color.to_string()
+                        );
                         let config_string = widget.get_config();
                         let rect = fix_rect(Rect::new(start_x, start_y, x, y));
                         if let Some(element) = app_data.get_element_mut(id) {

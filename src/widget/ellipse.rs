@@ -2,14 +2,20 @@ use crate::{model::rect::Rect, rough::Rough};
 
 use super::shape::Shape;
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone)]
 pub struct Ellipse {
     rect: Rect,
+    item_stroke_color: String,
+    item_bg_color: String,
 }
 
 impl Ellipse {
-    pub fn new(rect: Rect) -> Ellipse {
-        Ellipse { rect }
+    pub fn new(rect: Rect, item_stroke_color: String, item_bg_color: String) -> Ellipse {
+        Ellipse {
+            rect,
+            item_bg_color,
+            item_stroke_color,
+        }
     }
 }
 
@@ -20,6 +26,8 @@ impl Shape for Ellipse {
             self.rect.get_height() / 2,
             self.rect.get_width(),
             self.rect.get_height(),
+            self.item_stroke_color.clone(),
+            self.item_bg_color.clone(),
         );
         [config_string].to_vec()
     }

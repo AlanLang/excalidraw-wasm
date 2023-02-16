@@ -18,7 +18,7 @@ pub fn hit_test(element: &Element, x: i32, y: i32) -> bool {
 }
 
 fn hit_test_by_arrow(element: &Element, x: i32, y: i32) -> bool {
-    let arrow = Arrow::new(element.rect);
+    let arrow = Arrow::new(element.rect, "".into(), "".into());
     let (x1, y1, x2, y2, x3, y3, x4, y4) =
         arrow.get_lines(element.rect.start_x, element.rect.start_y);
     let x = x as f32;
