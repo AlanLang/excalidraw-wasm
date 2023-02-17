@@ -15,19 +15,28 @@
     <script src="https://unpkg.com/roughjs@4.5.2/bundled/rough.js"></script>
     <script>
         window.painter = {
-            rectangle: (x,y,w,h) => {
+            rectangle: (x,y,w,h,itemStrokeColor,itemBackgroundColorColor) => {
                 var generator = rough.generator();
-                const shape = generator.rectangle(x,y,w,h);
+                const shape = generator.rectangle(x,y,w,h,{
+                    stroke: itemStrokeColor,
+                    fill: itemBackgroundColorColor
+                });
                 return JSON.stringify(shape);
             },
-            ellipse: (centerX,centerY,w,h) => {
+            ellipse: (centerX,centerY,w,h,itemStrokeColor,itemBackgroundColorColor) => {
                 var generator = rough.generator();
-                const shape = generator.ellipse(centerX,centerY,w,h);
+                const shape = generator.ellipse(centerX,centerY,w,h,{
+                    stroke: itemStrokeColor,
+                    fill: itemBackgroundColorColor
+                });
                 return JSON.stringify(shape);
             },
-            line: (x1,y1,x2,y2) => {
+            line: (x1,y1,x2,y2,itemStrokeColor,itemBackgroundColorColor) => {
                 var generator = rough.generator();
-                const shape = generator.line(x1,y1,x2,y2);
+                const shape = generator.line(x1,y1,x2,y2,{
+                    stroke: itemStrokeColor,
+                    fill: itemBackgroundColorColor
+                });
                 return JSON.stringify(shape);
             },
             draw: (shapeString) => {
@@ -41,8 +50,8 @@
         }
     </script>
 
-<link rel="preload" href="/excalidraw-wasm/excalidraw-wasm-970281fee3785a73_bg.wasm" as="fetch" type="application/wasm" crossorigin="">
-<link rel="modulepreload" href="/excalidraw-wasm/excalidraw-wasm-970281fee3785a73.js"></head>
+<link rel="preload" href="/excalidraw-wasm/excalidraw-wasm-f64b126465df2e6f_bg.wasm" as="fetch" type="application/wasm" crossorigin="">
+<link rel="modulepreload" href="/excalidraw-wasm/excalidraw-wasm-f64b126465df2e6f.js"></head>
 <body>
 
-<script type="module">import init from '/excalidraw-wasm/excalidraw-wasm-970281fee3785a73.js';init('/excalidraw-wasm/excalidraw-wasm-970281fee3785a73_bg.wasm');</script></body></html>
+<script type="module">import init from '/excalidraw-wasm/excalidraw-wasm-f64b126465df2e6f.js';init('/excalidraw-wasm/excalidraw-wasm-f64b126465df2e6f_bg.wasm');</script></body></html>
