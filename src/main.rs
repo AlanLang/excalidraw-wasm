@@ -117,6 +117,7 @@ fn App<'a, G: Html>(ctx: Scope<'a>) -> View<G> {
                 width=window_width,
                 height=window_height,
                 id="canvas",
+                style=format!("background-color: {}", app_state.view_bg_color.get()),
                 on:mousedown= move |event|  {
                     let mouse_event = event.dyn_into::<MouseEvent>().unwrap();
                     let x = mouse_event.offset_x();
