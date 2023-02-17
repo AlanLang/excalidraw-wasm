@@ -33,9 +33,12 @@
                 });
                 return JSON.stringify(shape);
             },
-            line: (x1,y1,x2,y2) => {
+            line: (x1,y1,x2,y2,itemStrokeColor,itemBackgroundColorColor) => {
                 var generator = rough.generator();
-                const shape = generator.line(x1,y1,x2,y2);
+                const shape = generator.line(x1,y1,x2,y2,{
+                    stroke: itemStrokeColor,
+                    fill: itemBackgroundColorColor
+                });
                 return JSON.stringify(shape);
             },
             draw: (shapeString) => {

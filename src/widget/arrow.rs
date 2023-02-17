@@ -22,9 +22,30 @@ impl Arrow {
 impl Shape for Arrow {
     fn get_config(&self) -> Vec<String> {
         let (x1, y1, x2, y2, x3, y3, x4, y4) = self.get_lines(0, 0);
-        let config1 = Rough::generator_line(x3, y3, x2, y2);
-        let config2 = Rough::generator_line(x1, y1, x2, y2);
-        let config3 = Rough::generator_line(x4, y4, x2, y2);
+        let config1 = Rough::generator_line(
+            x3,
+            y3,
+            x2,
+            y2,
+            self.item_stroke_color.clone(),
+            self.item_bg_color.clone(),
+        );
+        let config2 = Rough::generator_line(
+            x1,
+            y1,
+            x2,
+            y2,
+            self.item_stroke_color.clone(),
+            self.item_bg_color.clone(),
+        );
+        let config3 = Rough::generator_line(
+            x4,
+            y4,
+            x2,
+            y2,
+            self.item_stroke_color.clone(),
+            self.item_bg_color.clone(),
+        );
         [config1, config2, config3].to_vec()
     }
 }
