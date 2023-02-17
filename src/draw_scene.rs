@@ -43,6 +43,10 @@ pub fn draw_scene(canvas: HtmlCanvasElement, app_data: &AppData) {
 fn draw_text(canvas: &HtmlCanvasElement, element: &Element) {
     let ctx = get_context(canvas);
     let font = ctx.font();
+    let fill_style = ctx.fill_style();
+    ctx.set_fill_style(&JsValue::from_str(
+        element.config.item_stroke_color.as_str(),
+    ));
     ctx.set_font("normal 20px Virgil");
     let text = element.shape_string.clone();
     let text = text.first();
@@ -57,6 +61,7 @@ fn draw_text(canvas: &HtmlCanvasElement, element: &Element) {
 
     ctx.fill_text(text.as_str(), x.into(), y.into()).unwrap();
     ctx.set_font(font.as_ref());
+    ctx.set_fill_style(fill_style.as_ref());
 }
 
 fn draw_selection(canvas: &HtmlCanvasElement, element: &Element) {
