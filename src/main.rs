@@ -6,7 +6,7 @@ use lib::{
         widget_kind::WidgetKind,
         AppData,
     },
-    storage::{read_data, save_data},
+    storage,
     store::AppState,
     view::{config_bar::ConfigBar, export::ExportTool, toolbar::Toolbar},
     widget::create_widget,
@@ -34,16 +34,15 @@ fn App<'a, G: Html>(ctx: Scope<'a>) -> View<G> {
 
     let canvas_ref: &NodeRef<G> = create_node_ref(ctx);
 
-    let drawing_state = create_signal(ctx, (0, 0, 0));
+    let drawing_state: &Signal<(f64, i32, i32)> = create_signal(ctx, (0.0, 0, 0));
     let is_dragging = create_signal(ctx, (false, 0, 0));
-
     let app_state = AppState {
         selected_kind: create_rc_signal(WidgetKind::Selection),
         export_config: create_rc_signal(Default::default()),
         view_bg_color: create_rc_signal("#ffffff".into()),
         item_stroke_color: create_rc_signal("#000000".into()),
         item_bg_color: create_rc_signal("#000000".into()),
-        app_data: create_rc_signal(AppData::default()),
+        app_data: create_rc_signal(AppData::get_from_local_storage()),
     };
     let app_state = provide_context(ctx, app_state);
 
@@ -56,6 +55,8 @@ fn App<'a, G: Html>(ctx: Scope<'a>) -> View<G> {
             .dyn_into::<web_sys::CanvasRenderingContext2d>()
             .expect("should cast to context");
         canvas_ctx.translate(0.5, 0.5).unwrap();
+        let app = app_state.get_data();
+        app.draw();
 
         let app_state_cloned = app_state.clone();
 
@@ -76,15 +77,17 @@ fn App<'a, G: Html>(ctx: Scope<'a>) -> View<G> {
 
         let app_state_cloned = app_state.clone();
         let on_copy = move |_| {
-            save_data(app_state_cloned.app_data.get().as_ref());
+            storage::save_elements_to_clipboard(
+                &app_state_cloned.get_data().get_selected_elements(),
+            );
         };
         add_event_listener("copy", on_copy);
 
         let app_state_cloned = app_state.clone();
         let on_paste = move |_| {
-            if let Some(app_data) = read_data() {
+            if let Some(elements) = storage::read_elements_from_clipboard() {
                 let mut app = app_state_cloned.get_data();
-                app_data.elements.iter().for_each(|element| {
+                elements.iter().for_each(|element| {
                     let mut element = Element::from(element);
                     element.move_element(10, 10);
                     app.add_element(element);
@@ -178,7 +181,7 @@ fn App<'a, G: Html>(ctx: Scope<'a>) -> View<G> {
                     }
 
 
-                    if id > 0 {
+                    if id > 0.0 {
                         let widget = create_widget(
                             *app_state.selected_kind.get(),
                             Rect::new(start_x, start_y, x, y),
@@ -228,8 +231,9 @@ fn App<'a, G: Html>(ctx: Scope<'a>) -> View<G> {
 
                     tracing::info!("Mouse up at ({}, {})", x, y);
                     app_state.set_selected_kind_default();
-                    drawing_state.set((0, 0, 0));
+                    drawing_state.set((0.0, 0, 0));
                     is_dragging.set((false, 0, 0));
+                    app_data.save_to_local_storage();
                 },
             )
         }

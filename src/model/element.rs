@@ -1,9 +1,6 @@
-use std::sync::atomic::AtomicU32;
-
 use serde::{Deserialize, Serialize};
 
 use super::{rect::Rect, widget_kind::WidgetKind};
-static NEXT_ELEMENT_ID: std::sync::atomic::AtomicU32 = AtomicU32::new(1);
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
 pub struct ElementConfig {
@@ -22,7 +19,7 @@ impl ElementConfig {
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
 pub struct Element {
-    pub id: u32,
+    pub id: f64,
     pub is_selected: bool,
     pub kind: WidgetKind,
     pub rect: Rect,
@@ -32,8 +29,7 @@ pub struct Element {
 
 impl Element {
     pub fn new(kind: WidgetKind, config: ElementConfig) -> Self {
-        let id = NEXT_ELEMENT_ID.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
-
+        let id = js_sys::Date::new_0().get_time();
         Self {
             id: id,
             is_selected: false,
@@ -70,8 +66,7 @@ impl Element {
     }
 
     pub fn from(element: &Element) -> Self {
-        let id = NEXT_ELEMENT_ID.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
-
+        let id = js_sys::Date::new_0().get_time();
         Self {
             id,
             is_selected: element.is_selected,

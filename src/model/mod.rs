@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use wasm_bindgen::JsCast;
 
-use crate::{draw_scene::draw_scene, utils::hit_test::hit_test};
+use crate::{draw_scene::draw_scene, storage, utils::hit_test::hit_test};
 
 use self::{
     element::{Element, ElementConfig},
@@ -29,7 +29,7 @@ impl AppData {
         self.elements.last_mut().unwrap()
     }
 
-    pub fn get_element_mut(&mut self, id: u32) -> Option<&mut Element> {
+    pub fn get_element_mut(&mut self, id: f64) -> Option<&mut Element> {
         self.elements.iter_mut().find(|e| e.id == id)
     }
 
@@ -62,7 +62,7 @@ impl AppData {
             .for_each(|element| element.set_selected(false));
     }
 
-    pub fn select_element(&mut self, id: u32, add: bool) {
+    pub fn select_element(&mut self, id: f64, add: bool) {
         self.elements.iter_mut().for_each(|element| {
             let need_select: bool = if add {
                 element.id == id || element.is_selected
@@ -96,15 +96,31 @@ impl AppData {
             .for_each(|element| element.set_selected(true));
     }
 
+    pub fn get_selected_elements(&self) -> Vec<&Element> {
+        self.elements.iter().filter(|e| e.is_selected).collect()
+    }
+
     pub fn draw(&self) {
         let window = web_sys::window().expect("no global `window` exists");
         let document = window.document().expect("should have a document on window");
-
         let main_canvas = document
             .get_element_by_id("canvas")
             .unwrap()
             .dyn_into::<web_sys::HtmlCanvasElement>()
             .expect("should cast to canvas");
         draw_scene(main_canvas, self);
+    }
+
+    pub fn get_from_local_storage() -> Self {
+        let mut app_data = match storage::read_data() {
+            Some(data) => data,
+            None => AppData::default(),
+        };
+        app_data.clean_selected_state();
+        app_data
+    }
+
+    pub fn save_to_local_storage(&self) {
+        storage::save_data(self);
     }
 }
