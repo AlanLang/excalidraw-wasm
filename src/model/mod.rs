@@ -3,7 +3,11 @@ use wasm_bindgen::JsCast;
 
 use crate::{draw_scene::draw_scene, utils::hit_test::hit_test};
 
-use self::{element::Element, rect::Rect, widget_kind::WidgetKind};
+use self::{
+    element::{Element, ElementConfig},
+    rect::Rect,
+    widget_kind::WidgetKind,
+};
 
 pub mod element;
 pub mod rect;
@@ -19,8 +23,8 @@ impl AppData {
         self.elements.push(element);
     }
 
-    pub fn create_element(&mut self, kind: WidgetKind) -> &Element {
-        let element = Element::new(kind);
+    pub fn create_element(&mut self, kind: WidgetKind, config: ElementConfig) -> &Element {
+        let element = Element::new(kind, config);
         self.elements.push(element);
         self.elements.last_mut().unwrap()
     }

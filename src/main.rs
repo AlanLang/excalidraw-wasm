@@ -1,6 +1,11 @@
 use lib::{
     event::add_event_listener,
-    model::{element::Element, rect::Rect, widget_kind::WidgetKind, AppData},
+    model::{
+        element::{Element, ElementConfig},
+        rect::Rect,
+        widget_kind::WidgetKind,
+        AppData,
+    },
     storage::{read_data, save_data},
     store::AppState,
     view::{config_bar::ConfigBar, export::ExportTool, toolbar::Toolbar},
@@ -124,7 +129,7 @@ fn App<'a, G: Html>(ctx: Scope<'a>) -> View<G> {
                     let y = mouse_event.offset_y();
                     let selected_kind = *app_state.selected_kind.get();
                     let mut app_data = app_state.get_data();
-                    let element = app_data.create_element(selected_kind);
+                    let element = app_data.create_element(selected_kind, ElementConfig::new(app_state.item_stroke_color.to_string(),app_state.item_bg_color.to_string()));
 
                     let id = element.id;
 

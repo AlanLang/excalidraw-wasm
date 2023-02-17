@@ -6,16 +6,32 @@ use super::{rect::Rect, widget_kind::WidgetKind};
 static NEXT_ELEMENT_ID: std::sync::atomic::AtomicU32 = AtomicU32::new(1);
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
+pub struct ElementConfig {
+    pub item_stroke_color: String,
+    pub item_bg_color: String,
+}
+
+impl ElementConfig {
+    pub fn new(item_stroke_color: String, item_bg_color: String) -> Self {
+        Self {
+            item_stroke_color,
+            item_bg_color,
+        }
+    }
+}
+
+#[derive(Debug, Default, Clone, Serialize, Deserialize)]
 pub struct Element {
     pub id: u32,
     pub is_selected: bool,
     pub kind: WidgetKind,
     pub rect: Rect,
     pub shape_string: Vec<String>,
+    pub config: ElementConfig,
 }
 
 impl Element {
-    pub fn new(kind: WidgetKind) -> Self {
+    pub fn new(kind: WidgetKind, config: ElementConfig) -> Self {
         let id = NEXT_ELEMENT_ID.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
 
         Self {
@@ -24,6 +40,7 @@ impl Element {
             kind: kind,
             rect: Rect::default(),
             shape_string: Vec::new(),
+            config,
         }
     }
 
@@ -61,6 +78,7 @@ impl Element {
             kind: element.kind.clone(),
             rect: element.rect.clone(),
             shape_string: element.shape_string.clone(),
+            config: element.config.clone(),
         }
     }
 }
