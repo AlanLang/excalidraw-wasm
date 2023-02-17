@@ -3,7 +3,7 @@ use lib::{
     model::{element::Element, rect::Rect, widget_kind::WidgetKind, AppData},
     storage::{read_data, save_data},
     store::AppState,
-    view::{export::ExportTool, toolbar::Toolbar},
+    view::{config_bar::ConfigBar, export::ExportTool, toolbar::Toolbar},
     widget::create_widget,
 };
 use sycamore::prelude::*;
@@ -35,6 +35,9 @@ fn App<'a, G: Html>(ctx: Scope<'a>) -> View<G> {
     let app_state = AppState {
         selected_kind: create_rc_signal(WidgetKind::Selection),
         export_config: create_rc_signal(Default::default()),
+        view_bg_color: create_rc_signal("#ffffff".into()),
+        item_stroke_color: create_rc_signal("#000000".into()),
+        item_bg_color: create_rc_signal("#000000".into()),
         app_data: create_rc_signal(AppData::default()),
     };
     let app_state = provide_context(ctx, app_state);
@@ -107,12 +110,14 @@ fn App<'a, G: Html>(ctx: Scope<'a>) -> View<G> {
     view! (ctx,
         div {
             ExportTool()
+            ConfigBar()
             Toolbar()
             canvas(
                 ref=canvas_ref,
                 width=window_width,
                 height=window_height,
                 id="canvas",
+                style=format!("background-color: {}", app_state.view_bg_color.get()),
                 on:mousedown= move |event|  {
                     let mouse_event = event.dyn_into::<MouseEvent>().unwrap();
                     let x = mouse_event.offset_x();
@@ -147,7 +152,6 @@ fn App<'a, G: Html>(ctx: Scope<'a>) -> View<G> {
                     } else {
                         app_data.clean_selected_state(); // 清理当前的选中状态
                     }
-
                     drawing_state.set((id, x, y));
                 },
                 on:mousemove= move |event| {
@@ -170,7 +174,12 @@ fn App<'a, G: Html>(ctx: Scope<'a>) -> View<G> {
 
 
                     if id > 0 {
-                        let widget = create_widget(*app_state.selected_kind.get(), Rect::new(start_x, start_y, x, y));
+                        let widget = create_widget(
+                            *app_state.selected_kind.get(),
+                            Rect::new(start_x, start_y, x, y),
+                            app_state.item_stroke_color.to_string(),
+                            app_state.item_bg_color.to_string()
+                        );
                         let config_string = widget.get_config();
                         let rect = fix_rect(Rect::new(start_x, start_y, x, y));
                         if let Some(element) = app_data.get_element_mut(id) {

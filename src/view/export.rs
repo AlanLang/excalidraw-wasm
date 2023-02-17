@@ -61,6 +61,7 @@ pub fn ExportTool<G: Html>(ctx: Scope) -> View<G> {
 fn export_as_png(app_state: &AppState) {
     let app_data = app_state.app_data.get();
     let export_config = app_state.export_config.get();
+    let view_bg_color = app_state.view_bg_color.get();
 
     let mut sub_canvas_x1 = i32::MAX;
     let mut sub_canvas_x2 = 0;
@@ -109,7 +110,7 @@ fn export_as_png(app_state: &AppState) {
             .expect("should cast to context");
 
         if export_config.background {
-            canvas_ctx.set_fill_style(&JsValue::from_str("white"));
+            canvas_ctx.set_fill_style(&JsValue::from_str(view_bg_color.as_str()));
             canvas_ctx.fill_rect(0.0, 0.0, width as f64, height as f64);
         }
 
