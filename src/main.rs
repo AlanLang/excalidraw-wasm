@@ -57,7 +57,7 @@ fn App<'a, G: Html>(ctx: Scope<'a>) -> View<G> {
         let handler = move |event: KeyboardEvent| {
             let step: i32 = event.shift_key().then(|| 10).unwrap_or(1);
             match event.key().as_str() {
-                "Backspace" => app_state_cloned.delete_selected_elements(),
+                "Backspace" | "Delete" => app_state_cloned.delete_selected_elements(),
                 "ArrowLeft" => app_state_cloned.move_selected_elements(-step, 0),
                 "ArrowRight" => app_state_cloned.move_selected_elements(step, 0),
                 "ArrowUp" => app_state_cloned.move_selected_elements(0, -step),
