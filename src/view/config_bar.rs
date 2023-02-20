@@ -1,6 +1,5 @@
 use crate::store::AppState;
 use sycamore::prelude::*;
-use wasm_bindgen::{JsCast, JsValue};
 
 #[component]
 pub fn ConfigBar<G: Html>(ctx: Scope) -> View<G> {

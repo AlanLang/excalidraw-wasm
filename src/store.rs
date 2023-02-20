@@ -42,6 +42,7 @@ impl AppState {
         let mut app_data = self.get_data();
         app_data.delete_selected_elements();
         app_data.draw();
+        app_data.save_to_local_storage();
     }
 
     pub fn clear_selection_elements(&self) {
@@ -57,6 +58,7 @@ impl AppState {
         let mut app_data = self.get_data();
         app_data.move_selected_elements(offset_x, offset_y);
         app_data.draw();
+        app_data.save_to_local_storage();
     }
 
     pub fn get_data(&self) -> Modify<AppData> {
