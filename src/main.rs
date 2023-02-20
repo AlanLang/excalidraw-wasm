@@ -146,6 +146,8 @@ fn App<'a, G: Html>(ctx: Scope<'a>) -> View<G> {
                             element.update_shape_string(vec![text]);
                             element.set_selected(true);
                             app_data.draw();
+                            app_data.save_to_local_storage()
+
                         }
                         return;
                     }
