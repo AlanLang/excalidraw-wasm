@@ -191,7 +191,7 @@ fn App<'a, G: Html>(ctx: Scope<'a>) -> View<G> {
                             app_state.item_bg_color.to_string()
                         );
                         let config_string = widget.get_config();
-                        let rect = fix_rect(Rect::new(start_x, start_y, x, y));
+                        let rect = Rect::new(start_x, start_y, x, y);
                         if let Some(element) = app_data.get_element_mut(id) {
                             element.update_rect(rect.start_x, rect.start_y, rect.end_x, rect.end_y);
                             element.update_shape_string(config_string);
@@ -266,17 +266,4 @@ pub fn get_text_info<G: Html>(canvas_ref: &NodeRef<G>, x: i32, y: i32) -> (Rect,
         end_y: y + height as i32,
     };
     (rect, text)
-}
-
-fn fix_rect(rect: Rect) -> Rect {
-    let start_x = rect.start_x.min(rect.end_x);
-    let start_y = rect.start_y.min(rect.end_y);
-    let end_x = rect.start_x.max(rect.end_x);
-    let end_y = rect.start_y.max(rect.end_y);
-    Rect {
-        start_x,
-        start_y,
-        end_x,
-        end_y,
-    }
 }
