@@ -84,10 +84,10 @@ fn draw_selection_border(canvas: &HtmlCanvasElement, element: &Element) {
     let line_dash = ctx.get_line_dash();
     ctx.set_line_dash(&dash).unwrap();
     let margin = 4;
-    let x = element.rect.start_x;
-    let y = element.rect.start_y;
-    let width = element.rect.end_x - element.rect.start_x;
-    let height = element.rect.end_y - element.rect.start_y;
+    let x = element.rect.start_x.min(element.rect.end_x);
+    let y = element.rect.start_y.min(element.rect.end_y);
+    let width = (element.rect.end_x - element.rect.start_x).abs();
+    let height = (element.rect.end_y - element.rect.start_y).abs();
     ctx.stroke_rect(
         (x - margin).into(),
         (y - margin).into(),

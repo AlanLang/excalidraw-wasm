@@ -30,8 +30,10 @@ impl Rect {
     }
 
     pub fn is_inside(&self, rect: Rect) -> bool {
-        if self.start_x > rect.start_x && self.start_y > rect.start_y {
-            if self.end_x < rect.end_x && self.end_y < rect.end_y {
+        let rect = fix_rect(&rect);
+        let target_rect = fix_rect(&self);
+        if target_rect.start_x > rect.start_x && target_rect.start_y > rect.start_y {
+            if target_rect.end_x < rect.end_x && target_rect.end_y < rect.end_y {
                 return true;
             }
         }
@@ -50,11 +52,25 @@ impl Rect {
      * Check if a point is inside the rectangle
      */
     pub fn is_in_point(&self, x: i32, y: i32) -> bool {
-        if x > self.start_x && x < self.end_x {
-            if y > self.start_y && y < self.end_y {
+        let rect = fix_rect(&self);
+        if x > rect.start_x && x < rect.end_x {
+            if y > rect.start_y && y < rect.end_y {
                 return true;
             }
         }
         return false;
+    }
+}
+
+fn fix_rect(rect: &Rect) -> Rect {
+    let start_x = rect.start_x.min(rect.end_x);
+    let start_y = rect.start_y.min(rect.end_y);
+    let end_x = rect.start_x.max(rect.end_x);
+    let end_y = rect.start_y.max(rect.end_y);
+    Rect {
+        start_x,
+        start_y,
+        end_x,
+        end_y,
     }
 }
